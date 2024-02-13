@@ -1,0 +1,1 @@
+export const CONTRAST_THRESHOLD = 124;
