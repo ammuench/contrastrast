@@ -15,7 +15,8 @@ export const getRGBFromColorString = (colorString: string): RGBValues => {
     return extractRGBValuesFromRGBStrings(red, green, blue);
   }
 
-  const [, hexMatch] = colorString.match(/#?([a-f0-9]{6}|[a-f0-9]{3})/i) || [];
+  const [, hexMatch] =
+    colorString.match(/^#?([a-f0-9]{6}|[a-f0-9]{3})$/i) || [];
   if (hexMatch) {
     return extractRGBValuesFromHex(hexMatch);
   }
