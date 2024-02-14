@@ -1,9 +1,10 @@
 {
   "name": "contrastrast",
   "description": "A library to determine text contrast based on WCAG Standards",
+  "license": "MIT",
   "version": "0.0.0",
   "type": "module",
-  "main": "./dist/my-lib.umd.cjs",
+  "main": "./dist/contrastrast.umd.cjs",
   "module": "./dist/contrastrast.js",
   "types": "./dist/index.d.ts",
   "files": [
