@@ -2,7 +2,7 @@
 
 # constrastrast
 
-A library to recommend text contrast based on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
+A lightweight tool that parses color strings and recommends text contrast based on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
 
 ## Installation
 
@@ -23,7 +23,7 @@ pnpm install --save constrastrast@latest
 
 For example, you may use it like this:
 
-```ts
+```tsx
 import { textContrastForBGColor } from "contrastrast";
 
 const MyColorChangingComponent = (backgroundColor: string) => {
@@ -76,6 +76,8 @@ HSL Notation with or without the symbol markers
 hsl(217°, 90%, 61%)
 
 hsl(72°, 90%, 61%)
+
+hsl(121deg, 90%, 61%)
 
 hsl(298, 90, 61)
 ```
