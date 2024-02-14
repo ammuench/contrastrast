@@ -1,3 +1,6 @@
+
+![contrastrast](https://github.com/ammuench/contrastrast/assets/2099658/8b7a90b0-3874-4650-a575-1170063d3462)
+
 # constrastrast
 
 A library to recommend text contrast based on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
