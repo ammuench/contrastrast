@@ -21,9 +21,12 @@
     "lint": "eslint --ext .ts,.js .",
     "lint:fix": "eslint --ext .ts,.js --fix .",
     "lint-staged": "lint-staged",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest",
+    "test:ci": "vitest --watch=false"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",

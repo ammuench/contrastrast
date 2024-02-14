@@ -1,4 +1,5 @@
-// vite.config.ts
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
@@ -13,4 +14,8 @@ export default defineConfig({
     },
   },
   plugins: [dts()],
+  test: {
+    include: ["**/*.test.ts"],
+    globals: true,
+  },
 });
