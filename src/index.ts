@@ -1,7 +1,6 @@
 import { getRGBFromColorString } from "./helpers/colorStringParsers";
-import { CONTRAST_THRESHOLD } from "./constants";
-
-type ContrastOptions = "dark" | "light";
+import { ContrastrastOptions } from "./types/contrastrastOptionts.types";
+import { CONTRAST_THRESHOLD, DEFAULT_CONTRASTRAST_OPTIONS } from "./constants";
 
 /**
  * Recommends to use either `light` or `dark` text based on the
@@ -9,14 +8,20 @@ type ContrastOptions = "dark" | "light";
  *
  * Color string can be HEX, RGB, or HSL
  *
- * @param   {string}            bgColorString           Color string of the background.  can be HEX, RGB, or HSL
- * @param   {ContrastOptions}   [fallbackOption="dark"] Fallback color recommendation, returns on error or unparsable color string.  Defaults to `dark`
- * @return  {ContrastOptions}                           Text color recommendation for given color string
+ * @param   {String}                bgColorString                           Color string of the background.  Can be HEX, RGB, or HSL
+ * @param   {ContrastrastOptions}   options                                 (Optional) Partial collection `ContrastrastOptions` that you wish you apply
+ * @param   {"dark"|"light"}        [options.fallbackOption="dark"]         Fallback color recommendation, returns on error or unparsable color string.  Defaults to `dark`
+ * @param   {Boolean}               [options.throwErrorOnUnhandled=false]   Force option to throw error when invalid/unhandled color string is passed.  Defaults to `false`
+ * @return  {"dark"|"light"}                                                Text color recommendation for given color string
  */
 export const textContrastForBGColor = (
   bgColorString: string,
-  fallbackOption: ContrastOptions = "dark"
-): ContrastOptions => {
+  options: Partial<ContrastrastOptions> = {}
+): "dark" | "light" => {
+  const opts = {
+    ...DEFAULT_CONTRASTRAST_OPTIONS,
+    ...options,
+  };
   try {
     const rgb = getRGBFromColorString(bgColorString);
     // http://www.w3.org/TR/AERT#color-contrast
@@ -25,10 +30,16 @@ export const textContrastForBGColor = (
     );
     return brightness > CONTRAST_THRESHOLD ? "dark" : "light";
   } catch (e) {
-    console.error(
-      `[contrastrast] Error while reading color, using default value "${fallbackOption}"\n`,
-      e
-    );
-    return fallbackOption;
+    if (opts.throwErrorOnUnhandled) {
+      console.error(
+        `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`,
+        e
+      );
+      throw new Error(
+        `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`
+      );
+    } else {
+      return opts.fallbackOption;
+    }
   }
 };

@@ -1,4 +1,3 @@
-
 ![contrastrast](https://github.com/ammuench/contrastrast/assets/2099658/8b7a90b0-3874-4650-a575-1170063d3462)
 
 # constrastrast
@@ -47,8 +46,11 @@ HEX Notation in either 3 or 6 length format
 
 ```
 #ad1232
+
 ad1232
+
 #ada
+
 ada
 ```
 
