@@ -31,14 +31,14 @@ export const textContrastForBGColor = (
     return brightness > CONTRAST_THRESHOLD ? "dark" : "light";
   } catch (e) {
     if (opts.throwErrorOnUnhandled) {
-      console.error(
-        `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`,
-        e
-      );
       throw new Error(
         `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`
       );
     } else {
+      console.error(
+        `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`,
+        e
+      );
       return opts.fallbackOption;
     }
   }

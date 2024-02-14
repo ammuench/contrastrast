@@ -12,7 +12,7 @@ const RGB_REGEX =
 const HEXCOLOR_REGEX = /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i;
 
 const HSL_REGEX =
-  /hsl\(\s*(\d+)°{0,1}\s*,\s*(\d*(?:\.\d+)?)%\s*,\s*(\d*(?:\.\d+)?)%\)/i;
+  /hsl\(\s*((?:360|3[0-5][0-9]|2[0-9][0-9]|1[0-9][0-9]|(?:100|0{0,1}[0-9][0-9]|0{0,1}0{0,1}[0-9])))(?:°|deg){0,1}\s*,{0,1}\s*((?:100|0{0,1}[0-9][0-9]|0{0,1}0{0,1}[0-9])(?:\.\d+)?)%{0,1}\s*,{0,1}\s*((?:100|0{0,1}[0-9][0-9]|0{0,1}0{0,1}[0-9])(?:\.\d+)?)%{0,1}\)/i;
 
 export const getRGBFromColorString = (colorString: string): RGBValues => {
   const [fullRgbMatch, red, green, blue] = colorString.match(RGB_REGEX) || [];

@@ -23,6 +23,7 @@
     "lint-staged": "lint-staged",
     "prepare": "husky",
     "test": "vitest",
+    "test:ui": "vitest --ui --coverage",
     "test:ci": "vitest --watch=false"
   },
   "devDependencies": {
@@ -30,6 +31,8 @@
     "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
+    "@vitest/coverage-istanbul": "^1.2.2",
+    "@vitest/ui": "^1.2.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
