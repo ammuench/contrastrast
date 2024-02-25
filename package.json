@@ -4,11 +4,12 @@
   "license": "MIT",
   "version": "0.1.1",
   "type": "module",
-  "main": "./dist/contrastrast.umd.cjs",
-  "module": "./dist/contrastrast.js",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "repository": {
     "type": "git",
@@ -29,8 +30,14 @@
   "author": "Alex Muench <ammuench@gmail.com> (https://alexmuen.ch/)",
   "exports": {
     ".": {
-      "import": "./dist/contrastrast.js",
-      "require": "./dist/contrastrast.umd.cjs"
+      "import": {
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      },
+      "require": {
+        "default": "./dist/index.umd.cjs",
+        "types": "./dist/index.d.cts"
+      }
     }
   },
   "scripts": {
@@ -53,6 +60,7 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "glob": "^10.3.10",
     "husky": "^9.0.10",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
