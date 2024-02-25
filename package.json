@@ -2,7 +2,7 @@
   "name": "contrastrast",
   "description": "A lightweight tool that parses color strings and recommends text contrast based on WCAG Standards",
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
