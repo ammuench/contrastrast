@@ -4,7 +4,8 @@
 
 # constrastrast
 
-A lightweight tool that parses color strings and recommends text contrast based on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
+A lightweight tool that parses color strings and recommends text contrast based
+on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
 
 ## Installation
 
@@ -16,12 +17,13 @@ npm install --save constrastrast@latest
 yarn add constrastrast@latest
 
 pnpm install --save constrastrast@latest
-
 ```
 
 ## How it works
 
-`constrastrast` takes a given background color as a string in either HEX, HSL, or RGB format, and (by default) returns `"dark"` or `"light"` as a recommended text variant for that given background color
+`constrastrast` takes a given background color as a string in either HEX, HSL,
+or RGB format, and (by default) returns `"dark"` or `"light"` as a recommended
+text variant for that given background color
 
 For example, you may use it like this:
 
@@ -33,7 +35,6 @@ const MyColorChangingComponent = (backgroundColor: string) => {
         This text is readable no matter what the background color is!
     </div>
 }
-
 ```
 
 ## Supported Color Formats
@@ -86,15 +87,18 @@ hsl(298, 90, 61)
 
 ### Alpha Formats
 
-Currently `contrastrast` doesn't support alpha formats and will log an error and return the default value
+Currently `contrastrast` doesn't support alpha formats and will log an error and
+return the default value
 
 ### Unhandled Formats
 
-If an unhandled string is passed, by default `contrastrast` will log an error and return the default value (`"dark"`)
+If an unhandled string is passed, by default `contrastrast` will log an error
+and return the default value (`"dark"`)
 
 ## Options
 
-`textContrastForBGColor` takes an `ContrastrastOptions` object as an optional second parameter, it currently has the following configuration options:
+`textContrastForBGColor` takes an `ContrastrastOptions` object as an optional
+second parameter, it currently has the following configuration options:
 
 ```ts
 type ContrastrastOptions = {
@@ -105,4 +109,6 @@ type ContrastrastOptions = {
 
 ## Contributing
 
-Happy for any and all contributions. Please note the project uses `pnpm` and I prefer to have git commits formatted with [`gitmoji-cli`](https://github.com/carloscuesta/gitmoji-cli)
+Happy for any and all contributions. Please note the project uses `pnpm` and I
+prefer to have git commits formatted with
+[`gitmoji-cli`](https://github.com/carloscuesta/gitmoji-cli)

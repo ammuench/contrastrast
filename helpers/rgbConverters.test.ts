@@ -1,12 +1,16 @@
-import { MockInstance } from "vitest";
+import { Stub, stub } from "jsr:@std/testing/mock";
+import { expect, fn } from "@std/expect";
 
-import { extractRGBValuesFromHex } from "./rgbConverters";
+import { extractRGBValuesFromHex } from "./rgbConverters.ts";
+import { afterAll, beforeAll, describe, test } from "@std/testing/bdd";
 
 describe("# rgbConverters", () => {
-  let consoleErrorSpy: MockInstance | undefined;
+  const consoleErrorSpy = fn();
+  let consoleErrorStub: Stub | undefined;
 
   beforeAll(() => {
-    consoleErrorSpy = vi.spyOn(console, "error").mockReturnValue();
+    // deno-lint-ignore no-explicit-any
+    consoleErrorStub = stub(console, "error", consoleErrorSpy as any);
   });
 
   describe("## extractRGBValuesFromHex", () => {
@@ -22,6 +26,6 @@ describe("# rgbConverters", () => {
   });
 
   afterAll(() => {
-    consoleErrorSpy?.mockClear();
+    consoleErrorStub?.restore();
   });
 });

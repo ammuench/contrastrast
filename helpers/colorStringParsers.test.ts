@@ -1,4 +1,7 @@
-import { getRGBFromColorString } from "./colorStringParsers";
+import { describe, test } from "jsr:@std/testing/bdd";
+import { expect } from "jsr:@std/expect";
+
+import { getRGBFromColorString } from "./colorStringParsers.ts";
 
 describe("# colorStringParsers", () => {
   describe("## output consistency", () => {

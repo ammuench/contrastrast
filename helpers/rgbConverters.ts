@@ -1,4 +1,4 @@
-import { RGBValues } from "../types/RGB.types";
+import { RGBValues } from "../types/RGB.types.ts";
 
 /**
  * Converts a HEX color value to RGB
@@ -38,7 +38,7 @@ export const extractRGBValuesFromHex = (hexString: string): RGBValues => {
 export const extractRGBValuesFromHSL = (
   hueString: string,
   saturationString: string,
-  lightString: string
+  lightString: string,
 ): RGBValues => {
   // Divide input values by their range to get them into the expected
   // [0,1] set expected by rest of equation.  Hue uses 360 because it's based on degrees
@@ -86,7 +86,7 @@ export const extractRGBValuesFromHSL = (
 export const extractRGBValuesFromRGBStrings = (
   redString: string,
   greenString: string,
-  blueString: string
+  blueString: string,
 ): RGBValues => {
   return {
     r: parseInt(redString, 10),

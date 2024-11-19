@@ -1,6 +1,9 @@
-import { CONTRAST_THRESHOLD, DEFAULT_CONTRASTRAST_OPTIONS } from "../constants";
-import { getRGBFromColorString } from "../helpers/colorStringParsers";
-import { ContrastrastOptions } from "../types/contrastrastOptionts.types";
+import {
+  CONTRAST_THRESHOLD,
+  DEFAULT_CONTRASTRAST_OPTIONS,
+} from "../constants.ts";
+import { getRGBFromColorString } from "../helpers/colorStringParsers.ts";
+import { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
 
 /**
  * Recommends to use either `light` or `dark` text based on the
@@ -16,7 +19,7 @@ import { ContrastrastOptions } from "../types/contrastrastOptionts.types";
  */
 export const textContrastForBGColor = (
   bgColorString: string,
-  options: Partial<ContrastrastOptions> = {}
+  options: Partial<ContrastrastOptions> = {},
 ): "dark" | "light" => {
   const opts = {
     ...DEFAULT_CONTRASTRAST_OPTIONS,
@@ -26,18 +29,18 @@ export const textContrastForBGColor = (
     const rgb = getRGBFromColorString(bgColorString);
     // http://www.w3.org/TR/AERT#color-contrast
     const brightness = Math.round(
-      (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000
+      (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000,
     );
     return brightness > CONTRAST_THRESHOLD ? "dark" : "light";
   } catch (e) {
     if (opts.throwErrorOnUnhandled) {
       throw new Error(
-        `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`
+        `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`,
       );
     } else {
       console.error(
         `[contrastrast] Error while reading color, using default value "${opts.fallbackOption}"\n`,
-        e
+        e,
       );
       return opts.fallbackOption;
     }

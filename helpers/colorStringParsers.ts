@@ -1,10 +1,10 @@
-import { RGBValues } from "../types/RGB.types";
+import { RGBValues } from "../types/RGB.types.ts";
 
 import {
   extractRGBValuesFromHex,
   extractRGBValuesFromHSL,
   extractRGBValuesFromRGBStrings,
-} from "./rgbConverters";
+} from "./rgbConverters.ts";
 
 const RGB_REGEX =
   /rgb\((0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),\s*(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),\s*(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d)\)/i;
@@ -25,8 +25,8 @@ export const getRGBFromColorString = (colorString: string): RGBValues => {
     return extractRGBValuesFromHex(hexMatch);
   }
 
-  const [fullHslMatch, hue, saturation, light] =
-    colorString.match(HSL_REGEX) || [];
+  const [fullHslMatch, hue, saturation, light] = colorString.match(HSL_REGEX) ||
+    [];
   if (fullHslMatch) {
     return extractRGBValuesFromHSL(hue, saturation, light);
   }

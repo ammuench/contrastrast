@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
+  },
+  "imports": {
+    "@faker-js/faker": "npm:@faker-js/faker@^9.2.0",
+    "@std/expect": "jsr:@std/expect@^1.0.8",
+    "@std/testing": "jsr:@std/testing@^1.0.5",
+    "husky": "npm:husky@^9.1.7",
+    "lint-staged": "npm:lint-staged@^15.2.10"
+  }
+}

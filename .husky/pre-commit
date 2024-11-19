@@ -1,1 +1,1 @@
-pnpm run lint-staged
+deno run lint-staged

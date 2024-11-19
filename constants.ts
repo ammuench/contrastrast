@@ -1,4 +1,4 @@
-import { ContrastrastOptions } from "./types/contrastrastOptionts.types";
+import { ContrastrastOptions } from "./types/contrastrastOptionts.types.ts";
 
 export const CONTRAST_THRESHOLD = 124;
 
