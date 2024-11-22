@@ -23,7 +23,7 @@
     "url": "https://github.com/ammuench/contrastrast/issues"
   },
   "exports": "./main.ts",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "tasks": {
     "dev": "deno run --watch main.ts",
     "lint-staged": "lint-staged",
