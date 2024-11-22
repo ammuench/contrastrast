@@ -1,10 +1,37 @@
 {
+  "name": "@amuench/contrastrast",
+  "license": "MIT",
+  "description": "A lightweight tool that parses color strings and recommends text contrast based on WCAG Standards",
+  "keywords": [
+    "wcag",
+    "text color",
+    "text contrast",
+    "constrast",
+    "readability",
+    "legible",
+    "a11y",
+    "colors",
+    "accessibility",
+    "color contrast"
+  ],
+  "author": "Alex Muench <hello@alexmuen.ch> (https://alexmuen.ch/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ammuench/contrastrast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ammuench/contrastrast/issues"
+  },
+  "exports": "./main.ts",
+  "version": "0.3.0",
   "tasks": {
     "dev": "deno run --watch main.ts",
     "lint-staged": "lint-staged",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:npm": "deno run -A scripts/build_npm.ts"
   },
   "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "@faker-js/faker": "npm:@faker-js/faker@^9.2.0",
     "@std/expect": "jsr:@std/expect@^1.0.8",
     "@std/testing": "jsr:@std/testing@^1.0.5",

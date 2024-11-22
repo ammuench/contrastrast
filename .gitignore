@@ -25,3 +25,6 @@ dist-ssr
 
 # Test Artifacts
 coverage
+
+# Build artifacts
+npm/

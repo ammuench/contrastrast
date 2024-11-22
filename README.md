@@ -1,5 +1,6 @@
 ![contrastrast](https://github.com/ammuench/contrastrast/assets/2099658/8b7a90b0-3874-4650-a575-1170063d3462)
 
+[![JSR](https://jsr.io/badges/@amuench/contrastrast)](https://jsr.io/@amuench/contrastrast)
 [![npm version](https://badge.fury.io/js/contrastrast.svg)](https://badge.fury.io/js/contrastrast)
 
 # constrastrast
@@ -12,11 +13,13 @@ on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
 Install `constrastrast` by running one of the following commands:
 
 ```bash
-npm install --save constrastrast@latest
+npm install --save constrastrast
 
-yarn add constrastrast@latest
+yarn add constrastrast
 
-pnpm install --save constrastrast@latest
+pnpm install --save constrastrast
+
+deno add contrastrast
 ```
 
 ## How it works
