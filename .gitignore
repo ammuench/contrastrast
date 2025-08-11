@@ -28,3 +28,6 @@ coverage
 
 # Build artifacts
 npm/
+
+# Development and planning
+__SPECS__/
