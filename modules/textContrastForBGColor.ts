@@ -3,7 +3,7 @@ import {
   DEFAULT_CONTRASTRAST_OPTIONS,
 } from "../constants.ts";
 import { getRGBFromColorString } from "../helpers/colorStringParsers.ts";
-import { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
+import type { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
 
 /**
  * Recommends to use either `light` or `dark` text based on the

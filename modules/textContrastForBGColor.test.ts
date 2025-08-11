@@ -1,10 +1,10 @@
-import { Stub, stub } from "@std/testing/mock";
+import { type Stub, stub } from "@std/testing/mock";
 import { expect, fn } from "@std/expect";
 import { afterAll, beforeAll, describe, test } from "@std/testing/bdd";
 
 import { faker } from "npm:@faker-js/faker";
 
-import { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
+import type { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
 import { textContrastForBGColor } from "../main.ts";
 
 describe("# textContrastForBGColor", () => {

@@ -1,4 +1,4 @@
-import { Stub, stub } from "jsr:@std/testing/mock";
+import { type Stub, stub } from "jsr:@std/testing/mock";
 import { expect, fn } from "@std/expect";
 
 import { extractRGBValuesFromHex } from "./rgbConverters.ts";

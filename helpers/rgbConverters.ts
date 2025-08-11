@@ -1,4 +1,4 @@
-import { RGBValues } from "../types/RGB.types.ts";
+import type { RGBValues } from "../types/RGB.types.ts";
 
 /**
  * Converts a HEX color value to RGB

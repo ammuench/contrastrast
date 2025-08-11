@@ -1,1 +1,1 @@
-deno run lint-staged
+deno task lint-staged 
