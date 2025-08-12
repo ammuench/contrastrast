@@ -1,17 +1,30 @@
 import type { Contrastrast } from "../contrastrast.ts";
-import type {
-  ContrastOptions,
-  ContrastResult,
-} from "../types/ContrastTypes.ts";
 import { WCAG_LEVELS } from "../constants.ts";
 import { contrastRatio } from "./contrastRatio.ts";
+import type { WCAGContrastLevel, WCAGTextSize } from "../types/WCAG.types.ts";
+
+export type ContrastResult = {
+  ratio: number;
+  passes: {
+    AA_NORMAL: boolean;
+    AA_LARGE: boolean;
+    AAA_NORMAL: boolean;
+    AAA_LARGE: boolean;
+  };
+};
+
+export type ContrastOptions = {
+  level?: WCAGContrastLevel;
+  textSize?: WCAGTextSize;
+  returnDetails?: boolean;
+};
 
 /**
  * Analyze text contrast between foreground and background colors
  * @param foreground Foreground color (text color)
  * @param background Background color
  * @param options (Optional) Configuration options for WCAG compliance checking
- * @param options.returnDetails When `true` returns the ratio and full WCAG breakdown, when `false` returns only the ratio as a `number`
+ * @param options.returnDetails When `true` returns the ratio and full WCAG contrast breakdown, when `false` returns only the ratio as a `number`
  * @returns Contrast ratio number or detailed ContrastResult object
  */
 export const textContrast = (

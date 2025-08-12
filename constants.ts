@@ -1,6 +1,5 @@
-import type { TextSize, WCAGLevel } from "./types/ContrastTypes.ts";
+import type { WCAGContrastLevel, WCAGTextSize } from "./types/WCAG.types.ts";
 
-// WC3 AERT brightness contrast threshold
 // Source: https://www.w3.org/TR/AERT/#color-contrast
 export const CONTRAST_THRESHOLD = 124;
 
@@ -40,7 +39,10 @@ export const CONTRAST_RATIO = {
 // WCAG 2.1 minimum contrast thresholds
 // Source: https://www.w3.org/TR/WCAG21/#contrast-minimum
 // Source: https://www.w3.org/TR/WCAG21/#contrast-enhanced
-export const WCAG_LEVELS: Record<WCAGLevel, Record<TextSize, number>> = {
+export const WCAG_LEVELS: Record<
+  WCAGContrastLevel,
+  Record<WCAGTextSize, number>
+> = {
   AA: {
     normal: 4.5,
     large: 3.0,

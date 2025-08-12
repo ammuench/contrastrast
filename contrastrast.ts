@@ -1,11 +1,3 @@
-import type { RGBValues } from "./types/RGB.types.ts";
-import type {
-  ContrastOptions,
-  ContrastResult,
-  HSLValues,
-  TextSize,
-  WCAGLevel,
-} from "./types/ContrastTypes.ts";
 import { getRGBFromColorString } from "./helpers/colorStringParsers.ts";
 import {
   BRIGHTNESS_COEFFICIENTS,
@@ -17,7 +9,13 @@ import {
   WCAG_LEVELS,
 } from "./constants.ts";
 import { contrastRatio } from "./utils/contrastRatio.ts";
-import { textContrast } from "./utils/textContrast.ts";
+import {
+  type ContrastOptions,
+  type ContrastResult,
+  textContrast,
+} from "./utils/textContrast.ts";
+import type { HSLValues, RGBValues } from "./types/Colors.types.ts";
+import type { WCAGContrastLevel, WCAGTextSize } from "./types/WCAG.types.ts";
 
 export class Contrastrast {
   private readonly rgb: RGBValues;
@@ -177,13 +175,13 @@ export class Contrastrast {
 
   // WCAG Compliance Helper
   meetsWCAG = (
-    otherColor: Contrastrast | string,
+    comparisonColor: Contrastrast | string,
     role: "foreground" | "background",
-    level: WCAGLevel,
-    textSize: TextSize = "normal",
+    targetWcagLevel: WCAGContrastLevel,
+    textSize: WCAGTextSize = "normal",
   ): boolean => {
-    const ratio = this.textContrast(otherColor, role);
-    const required = WCAG_LEVELS[level][textSize];
+    const ratio = this.textContrast(comparisonColor, role);
+    const required = WCAG_LEVELS[targetWcagLevel][textSize];
     return (typeof ratio === "number" ? ratio : ratio.ratio) >= required;
   };
 
