@@ -26,7 +26,7 @@ export class Contrastrast {
     this.rgb = getRGBFromColorString(colorString);
   }
 
-  // Factory Methods
+  // Parser/Creator Methods
   static fromHex = (hex: string): Contrastrast => {
     const normalizedHex = hex.startsWith("#") ? hex : `#${hex}`;
     return new Contrastrast(normalizedHex);
@@ -61,7 +61,7 @@ export class Contrastrast {
   static parse = (colorString: string): Contrastrast =>
     new Contrastrast(colorString);
 
-  // Conversion Methods
+  // Conversion & Output Methods
   toHex = (includeHash: boolean = true): string => {
     const toHex = (n: number) => {
       const hex = Math.round(n).toString(16);
@@ -162,16 +162,16 @@ export class Contrastrast {
     contrastRatio(this, color);
 
   textContrast = (
-    otherColor: Contrastrast | string,
+    comparisonColor: Contrastrast | string,
     role: "foreground" | "background" = "background",
     options: ContrastOptions = {},
   ): number | ContrastResult => {
     if (role === "background") {
-      // Current color is background, otherColor is foreground
-      return textContrast(otherColor, this, options);
+      // Current color is background, comparisonColor is foreground (text color)
+      return textContrast(comparisonColor, this, options);
     } else {
-      // Current color is foreground, otherColor is background
-      return textContrast(this, otherColor, options);
+      // Current color is foreground (text color), comparisonColor is background
+      return textContrast(this, comparisonColor, options);
     }
   };
 

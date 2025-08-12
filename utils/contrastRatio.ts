@@ -1,4 +1,4 @@
-import { Contrastrast } from "../Contrastrast.ts";
+import { Contrastrast } from "../contrastrast.ts";
 import { CONTRAST_RATIO } from "../constants.ts";
 
 /**

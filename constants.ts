@@ -1,4 +1,3 @@
-import type { ContrastrastOptions } from "./types/contrastrastOptionts.types.ts";
 import type { TextSize, WCAGLevel } from "./types/ContrastTypes.ts";
 
 // WC3 AERT brightness contrast threshold
@@ -66,8 +65,3 @@ export const HSL_CONVERSION = {
   FULL_CIRCLE_DEGREES: 360,
   PERCENTAGE_MULTIPLIER: 100,
 } as const;
-
-export const DEFAULT_CONTRASTRAST_OPTIONS: ContrastrastOptions = {
-  fallbackOption: "dark",
-  throwErrorOnUnhandled: false,
-};
