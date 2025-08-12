@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, test } from "@std/testing/bdd";
 
 import { faker } from "npm:@faker-js/faker";
 
-import { textContrastForBGColor } from "../main.ts";
+import { textContrastForBGColor } from "./textContrastForBGColor.ts";
 import type { ContrastrastOptions } from "./contrastrastOptions.types.ts";
 
 describe("# textContrastForBGColor", () => {

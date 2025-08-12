@@ -22,10 +22,10 @@
   "bugs": {
     "url": "https://github.com/ammuench/contrastrast/issues"
   },
-  "exports": "./main.ts",
+  "exports": "./mod.ts",
   "version": "0.3.1",
   "tasks": {
-    "dev": "deno run --watch main.ts",
+    "dev": "deno run --watch mod.ts",
     "lint-staged": "lint-staged",
     "prepare": "husky",
     "build:npm": "deno run -A scripts/build_npm.ts"
