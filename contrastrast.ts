@@ -159,11 +159,69 @@ export class Contrastrast {
   contrastRatio = (color: Contrastrast | string): number =>
     contrastRatio(this, color);
 
-  textContrast = (
+  /**
+   * Calculate the contrast ratio between this color and another color
+   * @param comparisonColor Color to compare against - accepts hex, rgb, hsl strings or Contrastrast instance
+   * @param role Role of this color instance in the contrast calculation
+   * @returns Contrast ratio as a number (1:1 to 21:1)
+   * @example
+   * ```typescript
+   * const bgColor = new Contrastrast("#1a73e8");
+   * const ratio = bgColor.textContrast("#ffffff"); // 4.5 (current as background, white as foreground)
+   * const ratio2 = bgColor.textContrast("#ffffff", "foreground"); // 4.5 (current as foreground, white as background)
+   * ```
+   */
+  textContrast(
+    comparisonColor: Contrastrast | string,
+    role?: "foreground" | "background",
+  ): number;
+
+  /**
+   * Analyze text contrast with detailed WCAG compliance results
+   * @param comparisonColor Color to compare against - accepts hex, rgb, hsl strings or Contrastrast instance
+   * @param role Role of this color instance in the contrast calculation
+   * @param options Configuration with returnDetails: true for detailed analysis
+   * @returns Detailed contrast analysis with WCAG compliance breakdown
+   * @example
+   * ```typescript
+   * const bgColor = new Contrastrast("#1a73e8");
+   * const result = bgColor.textContrast("#ffffff", "background", { returnDetails: true });
+   * // {
+   * //   ratio: 4.5,
+   * //   passes: {
+   * //     AA_NORMAL: true,   // 4.5 >= 4.5
+   * //     AA_LARGE: true,    // 4.5 >= 3.0
+   * //     AAA_NORMAL: false, // 4.5 < 7.0
+   * //     AAA_LARGE: true    // 4.5 >= 4.5
+   * //   }
+   * // }
+   * ```
+   */
+  textContrast(
+    comparisonColor: Contrastrast | string,
+    role: "foreground" | "background",
+    options: { returnDetails: true },
+  ): ContrastResult;
+
+  /**
+   * Calculate the contrast ratio between this color and another color
+   * @param comparisonColor Color to compare against - accepts hex, rgb, hsl strings or Contrastrast instance
+   * @param role Role of this color instance in the contrast calculation
+   * @param options Configuration with returnDetails: false (default) for simple ratio
+   * @returns Contrast ratio as a number (1:1 to 21:1)
+   */
+  textContrast(
+    comparisonColor: Contrastrast | string,
+    role?: "foreground" | "background",
+    options?: ContrastOptions,
+  ): number;
+
+  // Implementation
+  textContrast(
     comparisonColor: Contrastrast | string,
     role: "foreground" | "background" = "background",
     options: ContrastOptions = {},
-  ): number | ContrastResult => {
+  ): number | ContrastResult {
     if (role === "background") {
       // Current color is background, comparisonColor is foreground (text color)
       return textContrast(comparisonColor, this, options);
@@ -171,7 +229,7 @@ export class Contrastrast {
       // Current color is foreground (text color), comparisonColor is background
       return textContrast(this, comparisonColor, options);
     }
-  };
+  }
 
   // WCAG Compliance Helper
   meetsWCAG = (
@@ -182,7 +240,7 @@ export class Contrastrast {
   ): boolean => {
     const ratio = this.textContrast(comparisonColor, role);
     const required = WCAG_LEVELS[targetWcagLevel][textSize];
-    return (typeof ratio === "number" ? ratio : ratio.ratio) >= required;
+    return ratio >= required;
   };
 
   // Utility Methods

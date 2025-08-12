@@ -30,6 +30,20 @@
     "prepare": "husky",
     "build:npm": "deno run -A scripts/build_npm.ts"
   },
+  "exclude": [
+    "npm/",
+    "__SPECS__/",
+    "scripts/",
+    "node_modules/"
+  ],
+  "test": {
+    "exclude": [
+      "npm/",
+      "__SPECS__/",
+      "scripts/",
+      "node_modules/"
+    ]
+  },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "@faker-js/faker": "npm:@faker-js/faker@^9.2.0",
