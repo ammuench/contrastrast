@@ -34,14 +34,16 @@
     "npm/",
     "__SPECS__/",
     "scripts/",
-    "node_modules/"
+    "node_modules/",
+    "demo.ts"
   ],
   "test": {
     "exclude": [
       "npm/",
       "__SPECS__/",
       "scripts/",
-      "node_modules/"
+      "node_modules/",
+      "demo.ts"
     ]
   },
   "imports": {
