@@ -6,88 +6,174 @@ import type { ContrastResult } from "./utils/textContrast.ts";
 import { REFERENCE_COLORS } from "./constants/reference-colors.ts";
 
 describe("# Contrastrast", () => {
-  describe("## Constructor and Factory Methods", () => {
-    it("constructor parses HEX color strings", () => {
-      const color = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
+  describe("## Color parsing", () => {
+    describe("### HEX parsing", () => {
+      it("constructor parsing preserves HEX values", () => {
+        const originalHex = REFERENCE_COLORS.lightGray.hex.colorString;
+        const color = new Contrastrast(originalHex);
+        expect(color.toHex()).toBe(originalHex);
+      });
+
+      it("fromHex factory method preserves HEX values", () => {
+        const originalHex = REFERENCE_COLORS.midnightBlue.hex.colorString;
+        const color = Contrastrast.fromHex(originalHex);
+        expect(color.toHex()).toBe(originalHex);
+      });
+
+      it("fromHex handles hex without hash", () => {
+        const color = Contrastrast.fromHex("ff0000");
+        expect(color.toHex()).toBe("#ff0000");
+      });
+
+      it("multiple HEX colors round-trip correctly", () => {
+        const testColors = [
+          REFERENCE_COLORS.black,
+          REFERENCE_COLORS.white,
+          REFERENCE_COLORS.red,
+          REFERENCE_COLORS.lightGray,
+          REFERENCE_COLORS.mediumGray,
+          REFERENCE_COLORS.goldenrod,
+          REFERENCE_COLORS.midnightBlue,
+        ];
+
+        testColors.forEach((refColor) => {
+          const hexColor = new Contrastrast(refColor.hex.colorString);
+          expect(hexColor.toHex()).toBe(refColor.hex.colorString);
+        });
       });
     });
 
-    it("constructor parses RGB color strings", () => {
-      const color = new Contrastrast(REFERENCE_COLORS.red.rgb.colorString);
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
+    describe("### RGB parsing", () => {
+      it("constructor parsing preserves RGB values", () => {
+        const originalRgb = REFERENCE_COLORS.lightGray.rgb;
+        const color = new Contrastrast(originalRgb.colorString);
+        expect(color.toRgb()).toEqual({
+          r: originalRgb.r,
+          g: originalRgb.g,
+          b: originalRgb.b,
+        });
+      });
+
+      it("fromRgb factory method preserves RGB values", () => {
+        const originalRgb = REFERENCE_COLORS.goldenrod.rgb;
+        const color = Contrastrast.fromRgb(
+          originalRgb.r,
+          originalRgb.g,
+          originalRgb.b,
+        );
+        expect(color.toRgb()).toEqual({
+          r: originalRgb.r,
+          g: originalRgb.g,
+          b: originalRgb.b,
+        });
+      });
+
+      it("fromRgb with object preserves RGB values", () => {
+        const originalRgb = REFERENCE_COLORS.goldenrod.rgb;
+        const color = Contrastrast.fromRgb({
+          r: originalRgb.r,
+          g: originalRgb.g,
+          b: originalRgb.b,
+        });
+        expect(color.toRgb()).toEqual({
+          r: originalRgb.r,
+          g: originalRgb.g,
+          b: originalRgb.b,
+        });
+      });
+
+      it("multiple RGB colors round-trip correctly", () => {
+        const testColors = [
+          REFERENCE_COLORS.black,
+          REFERENCE_COLORS.white,
+          REFERENCE_COLORS.red,
+          REFERENCE_COLORS.lightGray,
+          REFERENCE_COLORS.mediumGray,
+          REFERENCE_COLORS.goldenrod,
+          REFERENCE_COLORS.midnightBlue,
+        ];
+
+        testColors.forEach((refColor) => {
+          const rgbColor = new Contrastrast(refColor.rgb.colorString);
+          expect(rgbColor.toRgb()).toEqual({
+            r: refColor.rgb.r,
+            g: refColor.rgb.g,
+            b: refColor.rgb.b,
+          });
+        });
       });
     });
 
-    it("constructor parses HSL color strings", () => {
-      const color = new Contrastrast(REFERENCE_COLORS.red.hsl.colorString);
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
+    describe("### HSL parsing", () => {
+      it("constructor parsing preserves HSL values", () => {
+        const originalHsl = REFERENCE_COLORS.lightGray.hsl;
+        const color = new Contrastrast(originalHsl.colorString);
+        const parsedHsl = color.toHsl();
+        expect(parsedHsl).toEqual({
+          h: parseInt(originalHsl.h),
+          s: parseInt(originalHsl.s),
+          l: parseInt(originalHsl.l),
+        });
+      });
+
+      it("fromHsl factory method preserves HSL values", () => {
+        const originalHsl = REFERENCE_COLORS.mediumGray.hsl;
+        const color = Contrastrast.fromHsl(
+          parseInt(originalHsl.h),
+          parseInt(originalHsl.s),
+          parseInt(originalHsl.l),
+        );
+        const parsedHsl = color.toHsl();
+        expect(parsedHsl).toEqual({
+          h: parseInt(originalHsl.h),
+          s: parseInt(originalHsl.s),
+          l: parseInt(originalHsl.l),
+        });
+      });
+
+      it("fromHsl with object preserves HSL values", () => {
+        const originalHsl = REFERENCE_COLORS.mediumGray.hsl;
+        const color = Contrastrast.fromHsl({
+          h: parseInt(originalHsl.h),
+          s: parseInt(originalHsl.s),
+          l: parseInt(originalHsl.l),
+        });
+        const parsedHsl = color.toHsl();
+        expect(parsedHsl).toEqual({
+          h: parseInt(originalHsl.h),
+          s: parseInt(originalHsl.s),
+          l: parseInt(originalHsl.l),
+        });
+      });
+
+      it("multiple HSL colors round-trip correctly", () => {
+        const testColors = [
+          REFERENCE_COLORS.black,
+          REFERENCE_COLORS.white,
+          REFERENCE_COLORS.red,
+          REFERENCE_COLORS.lightGray,
+          REFERENCE_COLORS.mediumGray,
+          REFERENCE_COLORS.goldenrod,
+          REFERENCE_COLORS.midnightBlue,
+        ];
+
+        testColors.forEach((refColor) => {
+          const hslColor = new Contrastrast(refColor.hsl.colorString);
+          const parsedHsl = hslColor.toHsl();
+          expect(parsedHsl).toEqual({
+            h: parseInt(refColor.hsl.h),
+            s: parseInt(refColor.hsl.s),
+            l: parseInt(refColor.hsl.l),
+          });
+        });
       });
     });
 
-    it("fromHex creates instance from hex string", () => {
-      const color = Contrastrast.fromHex(REFERENCE_COLORS.red.hex.colorString);
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
-      });
-    });
-
-    it("fromHex handles hex without hash", () => {
-      const color = Contrastrast.fromHex("ff0000");
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
-      });
-    });
-
-    it("fromRgb creates instance from numbers", () => {
-      const { r, g, b } = REFERENCE_COLORS.red.rgb;
-      const color = Contrastrast.fromRgb(r, g, b);
-      expect(color.toRgb()).toEqual({ r, g, b });
-    });
-
-    it("fromRgb creates instance from object", () => {
-      const { r, g, b } = REFERENCE_COLORS.red.rgb;
-      const color = Contrastrast.fromRgb({ r, g, b });
-      expect(color.toRgb()).toEqual({ r, g, b });
-    });
-
-    it("fromHsl creates instance from numbers", () => {
-      const color = Contrastrast.fromHsl(0, 100, 50);
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
-      });
-    });
-
-    it("fromHsl creates instance from object", () => {
-      const color = Contrastrast.fromHsl({ h: 0, s: 100, l: 50 });
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
-      });
-    });
-
-    it("parse method works like constructor", () => {
-      const color = Contrastrast.parse(REFERENCE_COLORS.red.hex.colorString);
-      expect(color.toRgb()).toEqual({
-        r: REFERENCE_COLORS.red.rgb.r,
-        g: REFERENCE_COLORS.red.rgb.g,
-        b: REFERENCE_COLORS.red.rgb.b,
+    describe("### General parsing", () => {
+      it("parse method works like constructor", () => {
+        const originalHex = REFERENCE_COLORS.red.hex.colorString;
+        const color = Contrastrast.parse(originalHex);
+        expect(color.toHex()).toBe(originalHex);
       });
     });
   });

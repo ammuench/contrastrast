@@ -49,7 +49,7 @@ export const extractRGBValuesFromHSL = (
   let r, g, b;
 
   if (s == 0) {
-    r = g = b = l; // achromatic
+    r = g = b = l * 255; // achromatic
   } else {
     const hue2rgb = (p: number, q: number, t: number): number => {
       if (t < 0) t += 1;
@@ -63,15 +63,15 @@ export const extractRGBValuesFromHSL = (
     const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
     const p = 2 * l - q;
 
-    r = hue2rgb(p, q, h + 1 / 3) * 255;
-    g = hue2rgb(p, q, h) * 255;
-    b = hue2rgb(p, q, h - 1 / 3) * 255;
+    r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
+    g = Math.round(hue2rgb(p, q, h) * 255);
+    b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
   }
 
   return {
-    r,
-    g,
-    b,
+    r: Math.round(r),
+    g: Math.round(g),
+    b: Math.round(b),
   };
 };
 
