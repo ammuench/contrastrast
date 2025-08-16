@@ -3,8 +3,8 @@ import { describe, it } from "@std/testing/bdd";
 import { Contrastrast } from "./contrastrast.ts";
 import { CONTRAST_THRESHOLD } from "./constants.ts";
 import type { ContrastResult } from "./utils/textContrast.ts";
-import { REFERENCE_COLORS } from "./constants/reference-colors.ts";
-import { WCAG_CONTRAST_REFERENCE } from "./constants/wcag-test-values.ts";
+import { REFERENCE_COLORS } from "./reference-values/reference-colors.ts";
+import { WCAG_CONTRAST_REFERENCE } from "./reference-values/wcag-reference-colors.ts";
 
 describe("# Contrastrast", () => {
   describe("## Color parsing", () => {
