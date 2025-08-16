@@ -44,5 +44,5 @@ export const getRGBFromColorString = (colorString: string): RGBValues => {
     return extractRGBValuesFromHSL(hue, saturation, light);
   }
 
-  throw new Error(`Unsupported color string "${colorString}"`);
+  throw new Error(`Invalid color string "${colorString}"`);
 };

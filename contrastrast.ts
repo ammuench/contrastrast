@@ -16,6 +16,12 @@ import {
 } from "./utils/textContrast.ts";
 import type { HSLValues, RGBValues } from "./types/Colors.types.ts";
 import type { WCAGContrastLevel, WCAGTextSize } from "./types/WCAG.types.ts";
+import type { ParseOptions } from "./types/ParseOptions.types.ts";
+
+const DEFAULT_PARSE_OPTIONS: Required<ParseOptions> = {
+  throwOnError: true,
+  fallbackColor: "#000000",
+};
 
 /**
  * A comprehensive color manipulation class that supports parsing, conversion, and accessibility analysis
@@ -33,19 +39,42 @@ export class Contrastrast {
   /**
    * Create a new Contrastrast instance from a color string
    * @param colorString Color string in hex (#abc or #abcdef), rgb (rgb(r,g,b)), or hsl (hsl(h,s%,l%)) format
-   * @throws {Error} When the color string format is not supported
+   * @param parseOpts Optional parsing configuration
+   * @param parseOpts.throwOnError Whether to throw an error on invalid color strings (default: true)
+   * @param parseOpts.fallbackColor Fallback color to use when throwOnError is false (default: "#000000")
+   * @throws {Error} When the color string format is not supported and throwOnError is true
    * @example
    * ```typescript
    * const color1 = new Contrastrast("#ff0000");
    * const color2 = new Contrastrast("rgb(255, 0, 0)");
    * const color3 = new Contrastrast("hsl(0, 100%, 50%)");
+   *
+   * // With error handling
+   * const color4 = new Contrastrast("invalid", { throwOnError: false, fallbackColor: "#333333" });
    * ```
    */
-  constructor(colorString: string) {
-    this.rgb = getRGBFromColorString(colorString);
+  constructor(colorString: string, parseOpts?: Partial<ParseOptions>) {
+    const options = parseOpts || DEFAULT_PARSE_OPTIONS;
+    try {
+      this.rgb = getRGBFromColorString(colorString);
+    } catch {
+      if (options.throwOnError === false) {
+        console.warn(
+          `Invalid color string "${colorString}";  Using "${
+            options.fallbackColor || DEFAULT_PARSE_OPTIONS.fallbackColor
+          }" as fallback color`,
+        );
+        this.rgb = getRGBFromColorString(
+          options.fallbackColor || DEFAULT_PARSE_OPTIONS.fallbackColor,
+        );
+      } else {
+        throw Error(`Invalid color string "${colorString}"`);
+      }
+    }
   }
 
   // Parser/Creator Methods
+
   /**
    * Create a Contrastrast instance from a hex color string
    * @param hex Hex color string with or without # prefix (e.g., "#ff0000" or "ff0000")
@@ -139,14 +168,23 @@ export class Contrastrast {
   /**
    * Parse a color string into a Contrastrast instance (alias for constructor)
    * @param colorString Color string in hex, rgb, or hsl format
+   * @param parseOpts Optional parsing configuration
+   * @param parseOpts.throwOnError Whether to throw an error on invalid color strings (default: true)
+   * @param parseOpts.fallbackColor Fallback color to use when throwOnError is false (default: "#000000")
    * @returns New Contrastrast instance
+   * @throws {Error} When the color string format is not supported and throwOnError is true
    * @example
    * ```typescript
    * const color = Contrastrast.parse("#1a73e8");
+   *
+   * // With error handling
+   * const safeColor = Contrastrast.parse("invalid", { throwOnError: false, fallbackColor: "#ffffff" });
    * ```
    */
-  static parse = (colorString: string): Contrastrast =>
-    new Contrastrast(colorString);
+  static parse = (
+    colorString: string,
+    parseOpts?: Partial<ParseOptions>,
+  ): Contrastrast => new Contrastrast(colorString, parseOpts);
 
   // Conversion & Output Methods
   /**
