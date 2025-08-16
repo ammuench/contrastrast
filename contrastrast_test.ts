@@ -177,6 +177,156 @@ describe("# Contrastrast", () => {
         expect(color.toHex()).toBe(originalHex);
       });
     });
+
+    describe("### ParseOptions configuration", () => {
+      describe("#### throwOnError behavior", () => {
+        it("constructor throws by default on invalid color string", () => {
+          expect(() => new Contrastrast("invalid-color")).toThrow(
+            'Invalid color string "invalid-color"',
+          );
+        });
+
+        it("constructor throws when throwOnError is explicitly true", () => {
+          expect(() =>
+            new Contrastrast("invalid-color", { throwOnError: true })
+          ).toThrow('Invalid color string "invalid-color"');
+        });
+
+        it("constructor does not throw when throwOnError is false", () => {
+          expect(() =>
+            new Contrastrast("invalid-color", { throwOnError: false })
+          ).not.toThrow();
+        });
+
+        it("static parse throws by default on invalid color string", () => {
+          expect(() => Contrastrast.parse("invalid-color")).toThrow(
+            'Invalid color string "invalid-color"',
+          );
+        });
+
+        it("static parse throws when throwOnError is explicitly true", () => {
+          expect(() =>
+            Contrastrast.parse("invalid-color", { throwOnError: true })
+          ).toThrow('Invalid color string "invalid-color"');
+        });
+
+        it("static parse does not throw when throwOnError is false", () => {
+          expect(() =>
+            Contrastrast.parse("invalid-color", { throwOnError: false })
+          ).not.toThrow();
+        });
+      });
+
+      describe("#### fallbackColor behavior", () => {
+        it("constructor uses default fallback color (#000000) when throwOnError is false", () => {
+          const color = new Contrastrast("invalid-color", {
+            throwOnError: false,
+          });
+          expect(color.toHex()).toBe("#000000");
+          expect(color.toRgb()).toEqual({ r: 0, g: 0, b: 0 });
+        });
+
+        it("constructor uses custom fallbackColor when provided", () => {
+          const fallbackColor = "#ff0000";
+          const color = new Contrastrast("invalid-color", {
+            throwOnError: false,
+            fallbackColor,
+          });
+          expect(color.toHex()).toBe(fallbackColor);
+          expect(color.toRgb()).toEqual({ r: 255, g: 0, b: 0 });
+        });
+
+        it("static parse uses default fallback color when throwOnError is false", () => {
+          const color = Contrastrast.parse("invalid-color", {
+            throwOnError: false,
+          });
+          expect(color.toHex()).toBe("#000000");
+          expect(color.toRgb()).toEqual({ r: 0, g: 0, b: 0 });
+        });
+
+        it("static parse uses custom fallbackColor when provided", () => {
+          const fallbackColor = "#00ff00";
+          const color = Contrastrast.parse("invalid-color", {
+            throwOnError: false,
+            fallbackColor,
+          });
+          expect(color.toHex()).toBe(fallbackColor);
+          expect(color.toRgb()).toEqual({ r: 0, g: 255, b: 0 });
+        });
+
+        it("fallbackColor works with RGB format", () => {
+          const fallbackColor = "rgb(128, 128, 128)";
+          const color = new Contrastrast("not-a-color", {
+            throwOnError: false,
+            fallbackColor,
+          });
+          expect(color.toRgb()).toEqual({ r: 128, g: 128, b: 128 });
+        });
+
+        it("fallbackColor works with HSL format", () => {
+          const fallbackColor = "hsl(120, 100%, 50%)"; // Pure green
+          const color = Contrastrast.parse("gibberish", {
+            throwOnError: false,
+            fallbackColor,
+          });
+          expect(color.toRgb()).toEqual({ r: 0, g: 255, b: 0 });
+        });
+
+        it("invalid fallbackColor throws error even when throwOnError is false", () => {
+          expect(() =>
+            new Contrastrast("invalid-color", {
+              throwOnError: false,
+              fallbackColor: "not-a-valid-color",
+            })
+          ).toThrow();
+          expect(() =>
+            Contrastrast.parse("invalid-color", {
+              throwOnError: false,
+              fallbackColor: "also-invalid",
+            })
+          ).toThrow();
+        });
+      });
+
+      describe("#### Edge cases and validation", () => {
+        it("throwOnError false with undefined fallbackColor uses default", () => {
+          const color = new Contrastrast("invalid", {
+            throwOnError: false,
+            fallbackColor: undefined,
+          });
+          expect(color.toHex()).toBe("#000000");
+        });
+
+        it("valid color string ignores ParseOptions", () => {
+          const validColor = "#ff0000";
+          const color1 = new Contrastrast(validColor);
+          const color2 = new Contrastrast(validColor, {
+            throwOnError: false,
+            fallbackColor: "#00ff00",
+          });
+
+          expect(color1.equals(color2)).toBe(true);
+          expect(color2.toHex()).toBe(validColor);
+        });
+
+        it("constructor with empty parseOpts object behaves like defaults", () => {
+          expect(() => new Contrastrast("invalid", {})).toThrow(
+            'Invalid color string "invalid"',
+          );
+        });
+
+        it("parseOpts as undefined behaves like defaults", () => {
+          expect(() => new Contrastrast("invalid", undefined)).toThrow(
+            'Invalid color string "invalid"',
+          );
+        });
+
+        it("partially filled parseOpts works correctly", () => {
+          const color = new Contrastrast("invalid", { throwOnError: false }); // No fallbackColor specified
+          expect(color.toHex()).toBe("#000000"); // Should use default fallback
+        });
+      });
+    });
   });
 
   describe("## Conversion Methods", () => {
