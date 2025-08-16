@@ -1,3 +1,8 @@
+/**
+ * Reference color values for consistent testing
+ * across the contrastrast library test suite
+ */
+
 export type ReferenceColor = {
   hex: {
     colorString: string;

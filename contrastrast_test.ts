@@ -1,9 +1,10 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
 import { Contrastrast } from "./contrastrast.ts";
-import { CONTRAST_THRESHOLD, WCAG_LEVELS } from "./constants.ts";
+import { CONTRAST_THRESHOLD } from "./constants.ts";
 import type { ContrastResult } from "./utils/textContrast.ts";
 import { REFERENCE_COLORS } from "./constants/reference-colors.ts";
+import { WCAG_CONTRAST_REFERENCE } from "./constants/wcag-test-values.ts";
 
 describe("# Contrastrast", () => {
   describe("## Color parsing", () => {
@@ -362,78 +363,65 @@ describe("# Contrastrast", () => {
     });
 
     it("detailed results show failing combinations", () => {
-      const lightGray = new Contrastrast(
-        REFERENCE_COLORS.lightGray.hex.colorString,
-      );
-      const result = lightGray.textContrast(
-        REFERENCE_COLORS.white.hex.colorString,
-        "background",
-        { returnDetails: true },
-      ) as ContrastResult;
+      const testData = WCAG_CONTRAST_REFERENCE.lightGrayWhite;
+      const color = new Contrastrast(testData.foreground);
+      const result = color.textContrast(testData.background, "foreground", {
+        returnDetails: true,
+      }) as ContrastResult;
 
-      expect(result.ratio).toBeCloseTo(1.61, 1);
-      expect(result.passes.AA_NORMAL).toBe(false);
-      expect(result.passes.AA_LARGE).toBe(false);
-      expect(result.passes.AAA_NORMAL).toBe(false);
-      expect(result.passes.AAA_LARGE).toBe(false);
+      expect(result.ratio).toBeCloseTo(testData.expectedContrastRatio, 1);
+      expect(result.passes.AA_NORMAL).toBe(
+        testData.expectedWCAGResults.AA_NORMAL,
+      );
+      expect(result.passes.AA_LARGE).toBe(
+        testData.expectedWCAGResults.AA_LARGE,
+      );
+      expect(result.passes.AAA_NORMAL).toBe(
+        testData.expectedWCAGResults.AAA_NORMAL,
+      );
+      expect(result.passes.AAA_LARGE).toBe(
+        testData.expectedWCAGResults.AAA_LARGE,
+      );
     });
   });
 
   describe("## WCAG Compliance Helper", () => {
-    const midnightBlue = new Contrastrast(
-      REFERENCE_COLORS.midnightBlue.hex.colorString,
-    );
-    const whiteColor = REFERENCE_COLORS.white.hex.colorString;
+    // Test all WCAG combinations using reference data
+    Object.entries(WCAG_CONTRAST_REFERENCE).forEach(([_testName, testData]) => {
+      it(`meetsWCAG ${testData.testCondition} (${testData.expectedContrastRatio}:1)`, () => {
+        const color = new Contrastrast(testData.foreground);
 
-    it("meetsWCAG returns true for compliant combinations", () => {
-      expect(midnightBlue.meetsWCAG(whiteColor, "background", "AA", "normal"))
-        .toBe(true);
-      expect(midnightBlue.meetsWCAG(whiteColor, "background", "AA", "large"))
-        .toBe(true);
-      expect(midnightBlue.meetsWCAG(whiteColor, "background", "AAA", "normal"))
-        .toBe(true);
-      expect(midnightBlue.meetsWCAG(whiteColor, "background", "AAA", "large"))
-        .toBe(true);
-    });
-
-    it("meetsWCAG returns false for non-compliant combinations", () => {
-      const lightGray = new Contrastrast(
-        REFERENCE_COLORS.lightGray.hex.colorString,
-      );
-
-      expect(lightGray.meetsWCAG(whiteColor, "background", "AA", "normal"))
-        .toBe(false);
-      expect(lightGray.meetsWCAG(whiteColor, "background", "AA", "large")).toBe(
-        false,
-      );
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AA", "normal"),
+        ).toBe(testData.expectedWCAGResults.AA_NORMAL);
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AA", "large"),
+        ).toBe(testData.expectedWCAGResults.AA_LARGE);
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AAA", "normal"),
+        ).toBe(testData.expectedWCAGResults.AAA_NORMAL);
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AAA", "large"),
+        ).toBe(testData.expectedWCAGResults.AAA_LARGE);
+      });
     });
 
     it("meetsWCAG defaults to normal text size", () => {
-      const resultWithDefault = midnightBlue.meetsWCAG(
-        whiteColor,
-        "background",
-        "AA",
+      const testData = WCAG_CONTRAST_REFERENCE.aaaNormalBorderline;
+      const color = new Contrastrast(testData.foreground);
+      const resultWithDefault = color.meetsWCAG(
+        testData.background,
+        "foreground",
+        "AAA",
       );
-      const resultExplicit = midnightBlue.meetsWCAG(
-        whiteColor,
-        "background",
-        "AA",
+      const resultExplicit = color.meetsWCAG(
+        testData.background,
+        "foreground",
+        "AAA",
         "normal",
       );
       expect(resultWithDefault).toBe(resultExplicit);
-    });
-
-    it("meetsWCAG uses correct thresholds", () => {
-      // Use medium gray which should be close to AA normal threshold (4.5)
-      const mediumGray = new Contrastrast(
-        REFERENCE_COLORS.mediumGray.hex.colorString,
-      );
-
-      const ratio = mediumGray.contrastRatio(whiteColor);
-      const meetsAA = ratio >= WCAG_LEVELS.AA.normal;
-
-      expect(mediumGray.meetsWCAG(whiteColor, "background", "AA", "normal"))
-        .toBe(meetsAA);
+      expect(resultWithDefault).toBe(testData.expectedWCAGResults.AAA_NORMAL);
     });
   });
 
@@ -529,6 +517,171 @@ describe("# Contrastrast", () => {
 
       // RGB values should remain unchanged
       expect(original.toRgb()).toEqual(originalRgb);
+    });
+  });
+
+  describe("## Inverse Conditions", () => {
+    describe("### Precision & Edge Cases", () => {
+      it("very similar but different colors are distinguished", () => {
+        // Test colors that are close but not identical
+        const color1 = new Contrastrast("#ffffff"); // Pure white
+        const color2 = new Contrastrast("#fefefe"); // Almost white
+
+        expect(color1.toHex()).not.toBe(color2.toHex());
+        expect(color1.toRgb()).not.toEqual(color2.toRgb());
+        expect(color1.equals(color2)).toBe(false);
+      });
+
+      it("cross-format parsing maintains color differences", () => {
+        // Parse same color in different formats
+        const redHex = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
+        const redRgb = new Contrastrast(REFERENCE_COLORS.red.rgb.colorString);
+        const redHsl = new Contrastrast(REFERENCE_COLORS.red.hsl.colorString);
+
+        // Parse different color in same format
+        const blueHex = new Contrastrast(
+          REFERENCE_COLORS.midnightBlue.hex.colorString,
+        );
+
+        // Same color in different formats should be equal
+        expect(redHex.equals(redRgb)).toBe(true);
+        expect(redRgb.equals(redHsl)).toBe(true);
+
+        // Different colors should NOT be equal regardless of format
+        expect(redHex.equals(blueHex)).toBe(false);
+        expect(redRgb.equals(blueHex)).toBe(false);
+        expect(redHsl.equals(blueHex)).toBe(false);
+      });
+    });
+
+    describe("### Mathematical Properties", () => {
+      it("isLight and isDark are always opposites", () => {
+        const testColors = [
+          new Contrastrast(REFERENCE_COLORS.black.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.white.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.red.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.lightGray.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.mediumGray.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.goldenrod.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.midnightBlue.hex.colorString),
+        ];
+
+        testColors.forEach((color) => {
+          expect(color.isLight()).toBe(!color.isDark());
+        });
+      });
+
+      it("equals is symmetric for all color pairs", () => {
+        const colors = [
+          new Contrastrast(REFERENCE_COLORS.red.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.midnightBlue.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.white.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.black.hex.colorString),
+        ];
+
+        // Test all pairs - equals should be symmetric: a.equals(b) === b.equals(a)
+        for (let i = 0; i < colors.length; i++) {
+          for (let j = i; j < colors.length; j++) {
+            const colorA = colors[i];
+            const colorB = colors[j];
+            expect(colorA.equals(colorB)).toBe(colorB.equals(colorA));
+          }
+        }
+      });
+    });
+
+    describe("### Threshold & Boundary Testing", () => {
+      it("brightness exactly at threshold (124) behaves consistently", () => {
+        // Create a color with brightness exactly at threshold (124)
+        // Using formula: (r * 299 + g * 587 + b * 114) / 1000 = 124
+        // Solving: r=124, g=124, b=124 gives brightness = 124
+        const thresholdColor = Contrastrast.fromRgb(124, 124, 124);
+
+        expect(thresholdColor.brightness()).toBe(CONTRAST_THRESHOLD);
+        // At exactly threshold, should NOT be light (uses > not >=)
+        expect(thresholdColor.isLight()).toBe(false);
+        expect(thresholdColor.isDark()).toBe(true);
+      });
+
+      it("WCAG levels maintain logical relationships", () => {
+        // Test that AAA is stricter than AA, and Normal is stricter than Large
+        const color = new Contrastrast("#ffffff");
+        const mediumContrast = "#666666"; // Medium contrast color
+
+        const AALarge = color.meetsWCAG(
+          mediumContrast,
+          "background",
+          "AA",
+          "large",
+        );
+        const AANormal = color.meetsWCAG(
+          mediumContrast,
+          "background",
+          "AA",
+          "normal",
+        );
+        const AAALarge = color.meetsWCAG(
+          mediumContrast,
+          "background",
+          "AAA",
+          "large",
+        );
+        const AAANormal = color.meetsWCAG(
+          mediumContrast,
+          "background",
+          "AAA",
+          "normal",
+        );
+
+        // Logical relationships that should always hold:
+        // If AAA Normal passes, AAA Large should also pass
+        if (AAANormal) expect(AAALarge).toBe(true);
+        // If AAA Large passes, AA Large should also pass
+        if (AAALarge) expect(AALarge).toBe(true);
+        // If AA Normal passes, AA Large should also pass
+        if (AANormal) expect(AALarge).toBe(true);
+      });
+    });
+
+    describe("### Deterministic Behavior", () => {
+      it("luminance values stay within valid range", () => {
+        const testColors = [
+          new Contrastrast(REFERENCE_COLORS.black.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.white.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.red.hex.colorString),
+          new Contrastrast(REFERENCE_COLORS.midnightBlue.hex.colorString),
+        ];
+
+        testColors.forEach((color) => {
+          const luminance = color.luminance();
+
+          // Luminance must be between 0 and 1 (inclusive)
+          expect(luminance).toBeGreaterThanOrEqual(0);
+          expect(luminance).toBeLessThanOrEqual(1);
+
+          // Multiple calls should return same value
+          expect(color.luminance()).toBe(luminance);
+        });
+      });
+
+      it("identical colors always fail WCAG tests", () => {
+        const testData = WCAG_CONTRAST_REFERENCE.identicalColors;
+        const color = new Contrastrast(testData.foreground);
+
+        // Same color should always fail (contrast ratio = 1:1)
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AA", "normal"),
+        ).toBe(testData.expectedWCAGResults.AA_NORMAL);
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AA", "large"),
+        ).toBe(testData.expectedWCAGResults.AA_LARGE);
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AAA", "normal"),
+        ).toBe(testData.expectedWCAGResults.AAA_NORMAL);
+        expect(
+          color.meetsWCAG(testData.background, "foreground", "AAA", "large"),
+        ).toBe(testData.expectedWCAGResults.AAA_LARGE);
+      });
     });
   });
 });
