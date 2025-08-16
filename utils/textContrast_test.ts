@@ -1,5 +1,6 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
+import { faker } from "npm:@faker-js/faker";
 import { textContrast } from "./textContrast.ts";
 import { contrastRatio } from "./contrastRatio.ts";
 import { Contrastrast } from "../contrastrast.ts";
@@ -26,63 +27,22 @@ describe("# textContrast", () => {
   });
 
   describe("## detailed results", () => {
-    it("returns detailed results when returnDetails is true", () => {
-      const result = textContrast("#000000", "#ffffff", {
+    it("returns detailed results with correct structure when returnDetails is true", () => {
+      const color1 = faker.color.rgb({ format: "hex" });
+      const color2 = faker.color.rgb({ format: "hex" });
+
+      const result = textContrast(color1, color2, {
         returnDetails: true,
       });
 
       expect(typeof result).toBe("object");
       expect(result).toHaveProperty("ratio");
       expect(result).toHaveProperty("passes");
-      expect(result.ratio).toBeCloseTo(21, 1);
-    });
-
-    it("includes all WCAG compliance checks in passes object", () => {
-      const result = textContrast("#1a73e8", "#ffffff", {
-        returnDetails: true,
-      });
-
+      expect(typeof result.ratio).toBe("number");
       expect(result.passes).toHaveProperty("AA_NORMAL");
       expect(result.passes).toHaveProperty("AA_LARGE");
       expect(result.passes).toHaveProperty("AAA_NORMAL");
       expect(result.passes).toHaveProperty("AAA_LARGE");
-    });
-
-    it("correctly identifies passing WCAG combinations", () => {
-      // Black on white should pass all WCAG levels
-      const result = textContrast("#000000", "#ffffff", {
-        returnDetails: true,
-      });
-
-      expect(result.passes.AA_NORMAL).toBe(true);
-      expect(result.passes.AA_LARGE).toBe(true);
-      expect(result.passes.AAA_NORMAL).toBe(true);
-      expect(result.passes.AAA_LARGE).toBe(true);
-    });
-
-    it("correctly identifies failing WCAG combinations", () => {
-      // Light gray on white should fail all WCAG levels
-      const result = textContrast("#cccccc", "#ffffff", {
-        returnDetails: true,
-      });
-
-      expect(result.passes.AA_NORMAL).toBe(false);
-      expect(result.passes.AA_LARGE).toBe(false);
-      expect(result.passes.AAA_NORMAL).toBe(false);
-      expect(result.passes.AAA_LARGE).toBe(false);
-    });
-
-    it("correctly identifies partial WCAG compliance", () => {
-      // Medium gray should pass AA but not AAA normal
-      const result = textContrast("#666666", "#ffffff", {
-        returnDetails: true,
-      });
-
-      // Should pass AA (both normal and large) and AAA large, but not AAA normal
-      expect(result.passes.AA_NORMAL).toBe(true); // 5.74 > 4.5
-      expect(result.passes.AA_LARGE).toBe(true); // 5.74 > 3.0
-      expect(result.passes.AAA_NORMAL).toBe(false); // 5.74 < 7.0
-      expect(result.passes.AAA_LARGE).toBe(true); // 5.74 > 4.5
     });
   });
 

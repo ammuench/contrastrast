@@ -3,63 +3,63 @@ import { describe, it } from "@std/testing/bdd";
 import { Contrastrast } from "./contrastrast.ts";
 import { CONTRAST_THRESHOLD, WCAG_LEVELS } from "./constants.ts";
 import type { ContrastResult } from "./utils/textContrast.ts";
-import { referenceColors } from "./constants/reference-colors.ts";
+import { REFERENCE_COLORS } from "./constants/reference-colors.ts";
 
 describe("# Contrastrast", () => {
   describe("## Constructor and Factory Methods", () => {
     it("constructor parses HEX color strings", () => {
-      const color = new Contrastrast(referenceColors.red.hex.colorString);
+      const color = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("constructor parses RGB color strings", () => {
-      const color = new Contrastrast(referenceColors.red.rgb.colorString);
+      const color = new Contrastrast(REFERENCE_COLORS.red.rgb.colorString);
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("constructor parses HSL color strings", () => {
-      const color = new Contrastrast(referenceColors.red.hsl.colorString);
+      const color = new Contrastrast(REFERENCE_COLORS.red.hsl.colorString);
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("fromHex creates instance from hex string", () => {
-      const color = Contrastrast.fromHex(referenceColors.red.hex.colorString);
+      const color = Contrastrast.fromHex(REFERENCE_COLORS.red.hex.colorString);
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("fromHex handles hex without hash", () => {
       const color = Contrastrast.fromHex("ff0000");
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("fromRgb creates instance from numbers", () => {
-      const { r, g, b } = referenceColors.red.rgb;
+      const { r, g, b } = REFERENCE_COLORS.red.rgb;
       const color = Contrastrast.fromRgb(r, g, b);
       expect(color.toRgb()).toEqual({ r, g, b });
     });
 
     it("fromRgb creates instance from object", () => {
-      const { r, g, b } = referenceColors.red.rgb;
+      const { r, g, b } = REFERENCE_COLORS.red.rgb;
       const color = Contrastrast.fromRgb({ r, g, b });
       expect(color.toRgb()).toEqual({ r, g, b });
     });
@@ -67,36 +67,36 @@ describe("# Contrastrast", () => {
     it("fromHsl creates instance from numbers", () => {
       const color = Contrastrast.fromHsl(0, 100, 50);
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("fromHsl creates instance from object", () => {
       const color = Contrastrast.fromHsl({ h: 0, s: 100, l: 50 });
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
 
     it("parse method works like constructor", () => {
-      const color = Contrastrast.parse(referenceColors.red.hex.colorString);
+      const color = Contrastrast.parse(REFERENCE_COLORS.red.hex.colorString);
       expect(color.toRgb()).toEqual({
-        r: referenceColors.red.rgb.r,
-        g: referenceColors.red.rgb.g,
-        b: referenceColors.red.rgb.b,
+        r: REFERENCE_COLORS.red.rgb.r,
+        g: REFERENCE_COLORS.red.rgb.g,
+        b: REFERENCE_COLORS.red.rgb.b,
       });
     });
   });
 
   describe("## Conversion Methods", () => {
-    const redColor = new Contrastrast(referenceColors.red.hex.colorString);
+    const redColor = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
 
     it("toHex returns hex string with hash by default", () => {
-      expect(redColor.toHex()).toBe(referenceColors.red.hex.colorString);
+      expect(redColor.toHex()).toBe(REFERENCE_COLORS.red.hex.colorString);
     });
 
     it("toHex returns hex string without hash when requested", () => {
@@ -104,12 +104,12 @@ describe("# Contrastrast", () => {
     });
 
     it("toRgb returns RGB object", () => {
-      const { r, g, b } = referenceColors.red.rgb;
+      const { r, g, b } = REFERENCE_COLORS.red.rgb;
       expect(redColor.toRgb()).toEqual({ r, g, b });
     });
 
     it("toRgbString returns RGB string", () => {
-      expect(redColor.toRgbString()).toBe(referenceColors.red.rgb.colorString);
+      expect(redColor.toRgbString()).toBe(REFERENCE_COLORS.red.rgb.colorString);
     });
 
     it("toHsl returns HSL object", () => {
@@ -121,7 +121,7 @@ describe("# Contrastrast", () => {
     });
 
     it("round-trip conversion preserves color", () => {
-      const original = referenceColors.goldenrod.hex.colorString;
+      const original = REFERENCE_COLORS.goldenrod.hex.colorString;
       const color = new Contrastrast(original);
       const roundTrip = color.toHex();
       expect(roundTrip).toBe(original);
@@ -130,16 +130,16 @@ describe("# Contrastrast", () => {
 
   describe("## Luminance and Brightness Calculations", () => {
     it("luminance calculates WCAG 2.1 relative luminance", () => {
-      const black = new Contrastrast(referenceColors.black.hex.colorString);
-      const white = new Contrastrast(referenceColors.white.hex.colorString);
+      const black = new Contrastrast(REFERENCE_COLORS.black.hex.colorString);
+      const white = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
 
       expect(black.luminance()).toBe(0);
       expect(white.luminance()).toBe(1);
     });
 
     it("brightness calculates legacy AERT brightness", () => {
-      const black = new Contrastrast(referenceColors.black.hex.colorString);
-      const white = new Contrastrast(referenceColors.white.hex.colorString);
+      const black = new Contrastrast(REFERENCE_COLORS.black.hex.colorString);
+      const white = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
 
       expect(black.brightness()).toBe(0);
       expect(white.brightness()).toBe(255);
@@ -147,7 +147,7 @@ describe("# Contrastrast", () => {
 
     it("midnight blue has expected luminance", () => {
       const midnightBlue = new Contrastrast(
-        referenceColors.midnightBlue.hex.colorString,
+        REFERENCE_COLORS.midnightBlue.hex.colorString,
       );
       // Expected luminance for midnight blue (#191970)
       expect(midnightBlue.luminance()).toBeCloseTo(0.0207, 3);
@@ -156,9 +156,9 @@ describe("# Contrastrast", () => {
 
   describe("## Utility Methods", () => {
     it("isLight returns true for light colors", () => {
-      const white = new Contrastrast(referenceColors.white.hex.colorString);
+      const white = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
       const lightGray = new Contrastrast(
-        referenceColors.lightGray.hex.colorString,
+        REFERENCE_COLORS.lightGray.hex.colorString,
       );
 
       expect(white.isLight()).toBe(true);
@@ -166,9 +166,9 @@ describe("# Contrastrast", () => {
     });
 
     it("isLight returns false for dark colors", () => {
-      const black = new Contrastrast(referenceColors.black.hex.colorString);
+      const black = new Contrastrast(REFERENCE_COLORS.black.hex.colorString);
       const darkBlue = new Contrastrast(
-        referenceColors.midnightBlue.hex.colorString,
+        REFERENCE_COLORS.midnightBlue.hex.colorString,
       );
 
       expect(black.isLight()).toBe(false);
@@ -176,8 +176,8 @@ describe("# Contrastrast", () => {
     });
 
     it("isDark is opposite of isLight", () => {
-      const white = new Contrastrast(referenceColors.white.hex.colorString);
-      const black = new Contrastrast(referenceColors.black.hex.colorString);
+      const white = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
+      const black = new Contrastrast(REFERENCE_COLORS.black.hex.colorString);
 
       expect(white.isDark()).toBe(!white.isLight());
       expect(black.isDark()).toBe(!black.isLight());
@@ -200,23 +200,23 @@ describe("# Contrastrast", () => {
 
   describe("## Contrast Ratio Calculations", () => {
     it("contrastRatio method works with string input", () => {
-      const black = new Contrastrast(referenceColors.black.hex.colorString);
-      const ratio = black.contrastRatio(referenceColors.white.hex.colorString);
+      const black = new Contrastrast(REFERENCE_COLORS.black.hex.colorString);
+      const ratio = black.contrastRatio(REFERENCE_COLORS.white.hex.colorString);
       expect(ratio).toBe(21);
     });
 
     it("contrastRatio method works with Contrastrast input", () => {
-      const black = new Contrastrast(referenceColors.black.hex.colorString);
-      const white = new Contrastrast(referenceColors.white.hex.colorString);
+      const black = new Contrastrast(REFERENCE_COLORS.black.hex.colorString);
+      const white = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
       const ratio = black.contrastRatio(white);
       expect(ratio).toBe(21);
     });
 
     it("contrastRatio is symmetric", () => {
       const color1 = new Contrastrast(
-        referenceColors.midnightBlue.hex.colorString,
+        REFERENCE_COLORS.midnightBlue.hex.colorString,
       );
-      const color2 = new Contrastrast(referenceColors.white.hex.colorString);
+      const color2 = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
 
       expect(color1.contrastRatio(color2)).toBe(color2.contrastRatio(color1));
     });
@@ -224,12 +224,12 @@ describe("# Contrastrast", () => {
 
   describe("## textContrast Instance Method", () => {
     const midnightBlue = new Contrastrast(
-      referenceColors.midnightBlue.hex.colorString,
+      REFERENCE_COLORS.midnightBlue.hex.colorString,
     );
 
     it("returns numeric ratio by default", () => {
       const ratio = midnightBlue.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
       );
       expect(typeof ratio).toBe("number");
       expect(ratio).toBeCloseTo(14.85, 1);
@@ -237,10 +237,10 @@ describe("# Contrastrast", () => {
 
     it("role parameter defaults to 'background'", () => {
       const ratioDefault = midnightBlue.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
       );
       const ratioExplicit = midnightBlue.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
         "background",
       );
       expect(ratioDefault).toBe(ratioExplicit);
@@ -249,21 +249,21 @@ describe("# Contrastrast", () => {
     it("handles 'foreground' role correctly", () => {
       // When this color is foreground, white is background
       const ratio = midnightBlue.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
         "foreground",
       );
       expect(ratio).toBeCloseTo(14.85, 1);
     });
 
     it("accepts Contrastrast instance as input", () => {
-      const white = new Contrastrast(referenceColors.white.hex.colorString);
+      const white = new Contrastrast(REFERENCE_COLORS.white.hex.colorString);
       const ratio = midnightBlue.textContrast(white);
       expect(ratio).toBeCloseTo(14.85, 1);
     });
 
     it("returns detailed results with returnDetails: true", () => {
       const result = midnightBlue.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
         "background",
         { returnDetails: true },
       ) as ContrastResult;
@@ -277,10 +277,10 @@ describe("# Contrastrast", () => {
 
     it("detailed results show failing combinations", () => {
       const lightGray = new Contrastrast(
-        referenceColors.lightGray.hex.colorString,
+        REFERENCE_COLORS.lightGray.hex.colorString,
       );
       const result = lightGray.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
         "background",
         { returnDetails: true },
       ) as ContrastResult;
@@ -295,9 +295,9 @@ describe("# Contrastrast", () => {
 
   describe("## WCAG Compliance Helper", () => {
     const midnightBlue = new Contrastrast(
-      referenceColors.midnightBlue.hex.colorString,
+      REFERENCE_COLORS.midnightBlue.hex.colorString,
     );
-    const whiteColor = referenceColors.white.hex.colorString;
+    const whiteColor = REFERENCE_COLORS.white.hex.colorString;
 
     it("meetsWCAG returns true for compliant combinations", () => {
       expect(midnightBlue.meetsWCAG(whiteColor, "background", "AA", "normal"))
@@ -312,7 +312,7 @@ describe("# Contrastrast", () => {
 
     it("meetsWCAG returns false for non-compliant combinations", () => {
       const lightGray = new Contrastrast(
-        referenceColors.lightGray.hex.colorString,
+        REFERENCE_COLORS.lightGray.hex.colorString,
       );
 
       expect(lightGray.meetsWCAG(whiteColor, "background", "AA", "normal"))
@@ -340,7 +340,7 @@ describe("# Contrastrast", () => {
     it("meetsWCAG uses correct thresholds", () => {
       // Use medium gray which should be close to AA normal threshold (4.5)
       const mediumGray = new Contrastrast(
-        referenceColors.mediumGray.hex.colorString,
+        REFERENCE_COLORS.mediumGray.hex.colorString,
       );
 
       const ratio = mediumGray.contrastRatio(whiteColor);
@@ -353,27 +353,27 @@ describe("# Contrastrast", () => {
 
   describe("## Color Equality", () => {
     it("equals returns true for identical colors", () => {
-      const color1 = new Contrastrast(referenceColors.red.hex.colorString);
-      const color2 = new Contrastrast(referenceColors.red.hex.colorString);
+      const color1 = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
+      const color2 = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
       expect(color1.equals(color2)).toBe(true);
     });
 
     it("equals returns true for equivalent colors in different formats", () => {
-      const hexColor = new Contrastrast(referenceColors.red.hex.colorString);
-      const rgbColor = new Contrastrast(referenceColors.red.rgb.colorString);
+      const hexColor = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
+      const rgbColor = new Contrastrast(REFERENCE_COLORS.red.rgb.colorString);
       expect(hexColor.equals(rgbColor)).toBe(true);
     });
 
     it("equals works with string input", () => {
-      const color = new Contrastrast(referenceColors.red.hex.colorString);
-      expect(color.equals(referenceColors.red.hex.colorString)).toBe(true);
-      expect(color.equals(referenceColors.red.rgb.colorString)).toBe(true);
+      const color = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
+      expect(color.equals(REFERENCE_COLORS.red.hex.colorString)).toBe(true);
+      expect(color.equals(REFERENCE_COLORS.red.rgb.colorString)).toBe(true);
     });
 
     it("equals returns false for different colors", () => {
-      const red = new Contrastrast(referenceColors.red.hex.colorString);
+      const red = new Contrastrast(REFERENCE_COLORS.red.hex.colorString);
       const midnightBlue = new Contrastrast(
-        referenceColors.midnightBlue.hex.colorString,
+        REFERENCE_COLORS.midnightBlue.hex.colorString,
       );
       expect(red.equals(midnightBlue)).toBe(false);
     });
@@ -383,12 +383,12 @@ describe("# Contrastrast", () => {
     it("complex workflow with multiple operations", () => {
       // Create a brand color and analyze its accessibility
       const brandColor = new Contrastrast(
-        referenceColors.midnightBlue.hex.colorString,
+        REFERENCE_COLORS.midnightBlue.hex.colorString,
       );
 
       // Check if it works well with white text
       const whiteTextRatio = brandColor.textContrast(
-        referenceColors.white.hex.colorString,
+        REFERENCE_COLORS.white.hex.colorString,
         "background",
       );
       expect(whiteTextRatio).toBeGreaterThanOrEqual(4.5);
@@ -396,7 +396,7 @@ describe("# Contrastrast", () => {
       // Verify WCAG compliance
       expect(
         brandColor.meetsWCAG(
-          referenceColors.white.hex.colorString,
+          REFERENCE_COLORS.white.hex.colorString,
           "background",
           "AA",
         ),
@@ -408,7 +408,7 @@ describe("# Contrastrast", () => {
     });
 
     it("ensures consistency across different color formats", () => {
-      const goldenrod = referenceColors.goldenrod;
+      const goldenrod = REFERENCE_COLORS.goldenrod;
 
       const color1 = new Contrastrast(goldenrod.hex.colorString);
       const color2 = new Contrastrast(goldenrod.rgb.colorString);
@@ -430,16 +430,16 @@ describe("# Contrastrast", () => {
 
     it("validates immutability of instances", () => {
       const original = new Contrastrast(
-        referenceColors.midnightBlue.hex.colorString,
+        REFERENCE_COLORS.midnightBlue.hex.colorString,
       );
       const originalRgb = original.toRgb();
 
       // Calling methods should not modify the original
       original.toHex();
       original.toHsl();
-      original.textContrast(referenceColors.white.hex.colorString);
-      original.contrastRatio(referenceColors.black.hex.colorString);
-      original.equals(referenceColors.midnightBlue.hex.colorString);
+      original.textContrast(REFERENCE_COLORS.white.hex.colorString);
+      original.contrastRatio(REFERENCE_COLORS.black.hex.colorString);
+      original.equals(REFERENCE_COLORS.midnightBlue.hex.colorString);
 
       // RGB values should remain unchanged
       expect(original.toRgb()).toEqual(originalRgb);

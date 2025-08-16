@@ -34,8 +34,7 @@
     "npm/",
     "__SPECS__/",
     "scripts/",
-    "node_modules/",
-    "demo.ts"
+    "node_modules/"
   ],
   "test": {
     "exclude": [
