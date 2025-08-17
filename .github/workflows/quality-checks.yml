@@ -36,11 +36,8 @@ jobs:
         run: deno lint
 
   test:
-    name: Test on Deno ${{ matrix.deno-version }}
+    name: Test w/ Deno
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deno-version: ["v1.x", "v2.x"]
 
     steps:
       - name: Checkout code
@@ -49,7 +46,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: ${{ matrix.deno-version }}
+          deno-version: v2.x
 
       - name: Run tests
         run: deno test --coverage=coverage
