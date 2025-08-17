@@ -2,17 +2,30 @@ import type { Contrastrast } from "../contrastrast.ts";
 import { WCAG_LEVELS } from "../constants.ts";
 import { contrastRatio } from "./contrastRatio.ts";
 
+/**
+ * Detailed contrast analysis result with WCAG compliance information
+ */
 export type ContrastResult = {
+  /** Contrast ratio (1:1 to 21:1) */
   ratio: number;
+  /** WCAG compliance test results */
   passes: {
+    /** WCAG AA compliance for normal text (4.5:1 threshold) */
     AA_NORMAL: boolean;
+    /** WCAG AA compliance for large text (3:1 threshold) */
     AA_LARGE: boolean;
+    /** WCAG AAA compliance for normal text (7:1 threshold) */
     AAA_NORMAL: boolean;
+    /** WCAG AAA compliance for large text (4.5:1 threshold) */
     AAA_LARGE: boolean;
   };
 };
 
+/**
+ * Options for contrast analysis functions
+ */
 export type ContrastOptions = {
+  /** Return detailed WCAG analysis instead of just the ratio (default: false) */
   returnDetails?: boolean;
 };
 
