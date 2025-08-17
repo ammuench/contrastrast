@@ -40,7 +40,8 @@ await build({
     },
   },
   compilerOptions: {
-    lib: ["ESNext"],
+    lib: ["ESNext", "DOM"],
+    skipLibCheck: true,
   },
   postBuild() {
     // steps to run after building and before running the tests

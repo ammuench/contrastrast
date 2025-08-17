@@ -33,6 +33,9 @@ jobs:
           npm install
           node -e "const contrastrast = require('./script/mod.js'); console.log('NPM package import successful')"
 
+      - name: Validate TypeScript types with attw
+        run: npx @arethetypeswrong/cli --pack ./npm
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
