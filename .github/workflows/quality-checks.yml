@@ -49,13 +49,4 @@ jobs:
           deno-version: v2.x
 
       - name: Run tests
-        run: deno test --coverage=coverage
-
-      - name: Generate coverage report
-        run: deno coverage coverage --lcov --output=coverage.lcov
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.lcov
-          fail_ci_if_error: false
+        run: deno test
