@@ -3,115 +3,500 @@
 [![JSR](https://jsr.io/badges/@amuench/contrastrast)](https://jsr.io/@amuench/contrastrast)
 [![npm version](https://badge.fury.io/js/contrastrast.svg)](https://badge.fury.io/js/contrastrast)
 
-# constrastrast
+# contrastrast
 
-A lightweight tool that parses color strings and recommends text contrast based
-on [WCAG Standards](http://www.w3.org/TR/AERT#color-contrast)
+A comprehensive TypeScript/Deno library for color manipulation, parsing,
+conversion, and accessibility analysis. Built with WCAG standards in mind,
+contrastrast helps you create accessible color combinations and analyze contrast
+ratios.
+
+**Features:**
+
+- 🎨 **Multi-format parsing**: Supports HEX, RGB, and HSL color formats
+- ♿ **WCAG compliance**: Built-in WCAG 2.1 contrast ratio calculations and
+  compliance checking
+- 📊 **Color analysis**: Luminance, brightness, and accessibility calculations
+- 🔄 **Format conversion**: Convert between HEX, RGB, and HSL formats
+- ⚡ **TypeScript**: Full TypeScript support with comprehensive type definitions
 
 ## Installation
 
-Install `constrastrast` by running one of the following commands:
+Install `contrastrast` by running one of the following commands:
 
 ```bash
-npm install --save constrastrast
+npm install --save contrastrast
 
-yarn add constrastrast
+yarn add contrastrast
 
-pnpm install --save constrastrast
+pnpm install --save contrastrast
 
-deno add contrastrast
+deno add jsr:@amuench/contrastrast
 ```
 
-## How it works
+## Quick Start
 
-`constrastrast` takes a given background color as a string in either HEX, HSL,
-or RGB format, and (by default) returns `"dark"` or `"light"` as a recommended
-text variant for that given background color
+```typescript
+import { Contrastrast } from "contrastrast";
 
-For example, you may use it like this:
+// Parse any color format, by default will throw an error if the color string is invalid
+const color = new Contrastrast("#1a73e8");
 
-```tsx
-import { textContrastForBGColor } from "contrastrast";
+// Check if the color is light or dark
+console.log(color.isLight()); // false
+console.log(color.isDark()); // true
 
-const MyColorChangingComponent = (backgroundColor: string) => {
-    return <div style={{ backgroundColor }} className={textContrastForBGColor(backgroundColor) === "dark" : "text-black" : "text-white"}>
-        This text is readable no matter what the background color is!
-    </div>
+// Get contrast ratio with another color
+const ratio = color.contrastRatio("#ffffff"); // 4.5
+
+// Check WCAG compliance
+const meetsAA = color.meetsWCAG("#ffffff", "background", "AA"); // true
+
+// Convert between formats
+console.log(color.toHex()); // "#1a73e8"
+console.log(color.toRgbString()); // "rgb(26, 115, 232)"
+console.log(color.toHslString()); // "hsl(218, 80%, 51%)"
+```
+
+## API Reference
+
+### Types
+
+The library exports the following TypeScript types:
+
+#### Color Value Types
+
+```typescript
+type RGBValues = {
+  r: number; // Red (0-255)
+  g: number; // Green (0-255)
+  b: number; // Blue (0-255)
+};
+
+type HSLValues = {
+  h: number; // Hue (0-360)
+  s: number; // Saturation (0-100)
+  l: number; // Lightness (0-100)
+};
+```
+
+#### Configuration Types
+
+```typescript
+type ParseOptions = {
+  throwOnError: boolean; // Whether to throw on invalid colors
+  fallbackColor?: string; // Fallback color when throwOnError is false
+};
+
+type ContrastOptions = {
+  returnDetails?: boolean; // Return detailed WCAG analysis instead of just ratio
+};
+```
+
+#### Result Types
+
+```typescript
+type ContrastResult = {
+  ratio: number;
+  passes: {
+    AA_NORMAL: boolean; // WCAG AA normal text (4.5:1)
+    AA_LARGE: boolean; // WCAG AA large text (3:1)
+    AAA_NORMAL: boolean; // WCAG AAA normal text (7:1)
+    AAA_LARGE: boolean; // WCAG AAA large text (4.5:1)
+  };
+};
+```
+
+#### WCAG Types
+
+```typescript
+type WCAGContrastLevel = "AA" | "AAA";
+type WCAGTextSize = "normal" | "large";
+```
+
+### Constructor and Factory Methods
+
+#### `new Contrastrast(colorString: string, parseOpts?: Partial<ParseOptions>)`
+
+Create a new Contrastrast instance from any supported color string.
+
+```typescript
+const color1 = new Contrastrast("#ff0000");
+const color2 = new Contrastrast("rgb(255, 0, 0)");
+const color3 = new Contrastrast("hsl(0, 100%, 50%)");
+
+// With error handling
+const safeColor = new Contrastrast("invalid-color", {
+  throwOnError: false,
+  fallbackColor: "#000000",
+});
+```
+
+#### `Contrastrast.parse(colorString: string, parseOpts?: Partial<ParseOptions>): Contrastrast`
+
+Static method alias for the constructor. Also accepts the same `parseOpts`
+configuration object.
+
+```typescript
+const color = Contrastrast.parse("#1a73e8");
+
+// With error handling
+const safeColor = Contrastrast.parse("invalid-color", {
+  throwOnError: false,
+  fallbackColor: "#ffffff",
+});
+```
+
+#### `Contrastrast.fromHex(hex: string): Contrastrast`
+
+Create from hex color (with or without #). Supports 3 and 6 digit codes.
+
+```typescript
+const red1 = Contrastrast.fromHex("#ff0000");
+const red2 = Contrastrast.fromHex("ff0000");
+const shortRed = Contrastrast.fromHex("#f00");
+```
+
+#### `Contrastrast.fromRgb(r: number, g: number, b: number): Contrastrast` / `Contrastrast.fromRgb(rgb: RGBValues): Contrastrast`
+
+Create from RGB values.
+
+```typescript
+const red1 = Contrastrast.fromRgb(255, 0, 0);
+const red2 = Contrastrast.fromRgb({ r: 255, g: 0, b: 0 });
+```
+
+#### `Contrastrast.fromHsl(h: number, s: number, l: number): Contrastrast` / `Contrastrast.fromHsl(hsl: HSLValues): Contrastrast`
+
+Create from HSL values.
+
+```typescript
+const red1 = Contrastrast.fromHsl(0, 100, 50);
+const red2 = Contrastrast.fromHsl({ h: 0, s: 100, l: 50 });
+```
+
+### Color Format Conversion
+
+#### `toHex(includeHash?: boolean): string`
+
+Convert to hex format.
+
+```typescript
+const color = new Contrastrast("rgb(255, 0, 0)");
+console.log(color.toHex()); // "#ff0000"
+console.log(color.toHex(false)); // "ff0000"
+```
+
+#### `toRgb(): RGBValues`
+
+Get RGB values as an object.
+
+```typescript
+const rgb = color.toRgb(); // { r: 255, g: 0, b: 0 }
+```
+
+#### `toRgbString(): string`
+
+Convert to RGB string format.
+
+```typescript
+const rgbString = color.toRgbString(); // "rgb(255, 0, 0)"
+```
+
+#### `toHsl(): HSLValues`
+
+Get HSL values as an object.
+
+```typescript
+const hsl = color.toHsl(); // { h: 0, s: 100, l: 50 }
+```
+
+#### `toHslString(): string`
+
+Convert to HSL string format.
+
+```typescript
+const hslString = color.toHslString(); // "hsl(0, 100%, 50%)"
+```
+
+### Color Analysis
+
+#### `luminance(): number`
+
+Calculate
+[WCAG 2.1 relative luminance](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance)
+(0-1).
+
+```typescript
+const black = new Contrastrast("#000000");
+const white = new Contrastrast("#ffffff");
+console.log(black.luminance()); // 0
+console.log(white.luminance()); // 1
+```
+
+#### `brightness(): number`
+
+Calculate perceived brightness using
+[AERT formula](https://www.w3.org/TR/AERT#color-contrast) (0-255).
+
+```typescript
+const color = new Contrastrast("#1a73e8");
+const brightness = color.brightness(); // ~102.4
+```
+
+#### `isLight(): boolean` / `isDark(): boolean`
+
+Determine if color is light or dark based on
+[AERT brightness](https://www.w3.org/TR/AERT#color-contrast) threshold (124).
+
+```typescript
+const lightColor = new Contrastrast("#ffffff");
+const darkColor = new Contrastrast("#000000");
+console.log(lightColor.isLight()); // true
+console.log(darkColor.isDark()); // true
+```
+
+### Accessibility & Contrast
+
+#### `contrastRatio(color: Contrastrast | string): number`
+
+Calculate
+[WCAG 2.1 contrast ratio](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio)
+between colors.
+
+```typescript
+const bgColor = new Contrastrast("#1a73e8");
+const ratio = bgColor.contrastRatio("#ffffff"); // 4.5
+```
+
+#### `textContrast(comparisonColor: Contrastrast | string, role?: "foreground" | "background", options?: ContrastOptions): number | ContrastResult`
+
+Calculate contrast with detailed
+[WCAG compliance analysis](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)
+options.
+
+```typescript
+// Simple ratio
+const ratio = bgColor.textContrast("#ffffff"); // 4.5
+
+// Detailed analysis
+const result = bgColor.textContrast("#ffffff", "background", {
+  returnDetails: true,
+});
+// {
+//   ratio: 4.5,
+//   passes: {
+//     AA_NORMAL: true,
+//     AA_LARGE: true,
+//     AAA_NORMAL: false,
+//     AAA_LARGE: true
+//   }
+// }
+```
+
+#### `meetsWCAG(comparisonColor: Contrastrast | string, role: "foreground" | "background", level: "AA" | "AAA", textSize?: "normal" | "large"): boolean`
+
+Check
+[WCAG compliance](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)
+for specific requirements.
+
+```typescript
+const bgColor = new Contrastrast("#1a73e8");
+
+// Check different WCAG levels
+const meetsAA = bgColor.meetsWCAG("#ffffff", "background", "AA"); // true
+const meetsAAA = bgColor.meetsWCAG("#ffffff", "background", "AAA"); // false
+const meetsAALarge = bgColor.meetsWCAG("#ffffff", "background", "AA", "large"); // true
+```
+
+### Utility Methods
+
+#### `equals(color: Contrastrast | string): boolean`
+
+Compare colors for equality.
+
+```typescript
+const color1 = new Contrastrast("#ff0000");
+const color2 = new Contrastrast("rgb(255, 0, 0)");
+console.log(color1.equals(color2)); // true
+```
+
+## ParseOptions Configuration
+
+Both the constructor and `parse` method accept optional configuration for error
+handling:
+
+```typescript
+interface ParseOptions {
+  throwOnError: boolean; // Whether to throw on invalid colors (default: true)
+  fallbackColor?: string; // Fallback color when throwOnError is false (default: "#000000")
 }
+
+// Safe parsing with fallback
+const safeColor = Contrastrast.parse("invalid-color", {
+  throwOnError: false,
+  fallbackColor: "#333333",
+});
+
+// Will throw on invalid color (default behavior)
+const strictColor = new Contrastrast("invalid-color"); // throws Error
 ```
 
 ## Supported Color Formats
 
-`constrastrast` supports the following color string formats:
-
 ### HEX
 
-HEX Notation in either 3 or 6 length format
-
-**examples**
-
-```
-#ad1232
-
-ad1232
-
-#ada
-
-ada
-```
+- `#ff0000` or `ff0000`
+- `#f00` or `f00` (short format)
 
 ### RGB
 
-Standard RGB notation
-
-**examples**
-
-```
-rgb(100,200, 230)
-
-rgb(5, 30, 40)
-```
+- `rgb(255, 0, 0)`
+- `rgb(100, 200, 230)`
 
 ### HSL
 
-HSL Notation with or without the symbol markers
+- `hsl(0, 100%, 50%)`
+- `hsl(217, 90%, 61%)`
 
-**examples**
+## Real-World Examples
 
-```
-hsl(217°, 90%, 61%)
+### React Component with Dynamic Text Color
 
-hsl(72°, 90%, 61%)
+```tsx
+import { Contrastrast } from "contrastrast";
 
-hsl(121deg, 90%, 61%)
+interface ColorCardProps {
+  backgroundColor: string;
+  children: React.ReactNode;
+}
 
-hsl(298, 90, 61)
-```
+const ColorCard: React.FC<ColorCardProps> = ({ backgroundColor, children }) => {
+  const bgColor = new Contrastrast(backgroundColor);
+  const textColor = bgColor.isLight() ? "#000000" : "#ffffff";
 
-### Alpha Formats
-
-Currently `contrastrast` doesn't support alpha formats and will log an error and
-return the default value
-
-### Unhandled Formats
-
-If an unhandled string is passed, by default `contrastrast` will log an error
-and return the default value (`"dark"`)
-
-## Options
-
-`textContrastForBGColor` takes an `ContrastrastOptions` object as an optional
-second parameter, it currently has the following configuration options:
-
-```ts
-type ContrastrastOptions = {
-  fallbackOption?: "dark" | "light"; // Defaults to "dark" if not specified
-  throwErrorOnUnhandled?: boolean; // Throws an error instead of returning the `fallbackOption`.  Defaults to `false` if not specific
+  return (
+    <div style={{ backgroundColor, color: textColor }}>
+      {children}
+    </div>
+  );
 };
 ```
 
+### WCAG Compliant Color Picker
+
+```typescript
+import { Contrastrast } from "contrastrast";
+
+function validateColorCombination(background: string, foreground: string): {
+  isValid: boolean;
+  level: string;
+  ratio: number;
+} {
+  const bgColor = new Contrastrast(background);
+  const ratio = bgColor.contrastRatio(foreground);
+
+  const meetsAAA = bgColor.meetsWCAG(foreground, "background", "AAA");
+  const meetsAA = bgColor.meetsWCAG(foreground, "background", "AA");
+
+  return {
+    isValid: meetsAA,
+    level: meetsAAA ? "AAA" : meetsAA ? "AA" : "FAIL",
+    ratio,
+  };
+}
+
+const result = validateColorCombination("#1a73e8", "#ffffff");
+console.log(result); // { isValid: true, level: "AA", ratio: 4.5 }
+```
+
+## Standalone Utility Functions
+
+In addition to the Contrastrast class methods, contrastrast exports standalone
+utility functions for when you need to work with colors without creating class
+instances.
+
+### `textContrast(foreground: Contrastrast | string, background: Contrastrast | string, options?: ContrastOptions): number | ContrastResult`
+
+Calculate contrast ratio between two colors with optional detailed
+[WCAG analysis](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html).
+
+```typescript
+import { textContrast } from "contrastrast";
+
+// Simple ratio calculation
+const ratio = textContrast("#000000", "#ffffff"); // 21
+
+// Detailed WCAG analysis
+const analysis = textContrast("#1a73e8", "#ffffff", { returnDetails: true });
+// {
+//   ratio: 4.5,
+//   passes: {
+//     AA_NORMAL: true,
+//     AA_LARGE: true,
+//     AAA_NORMAL: false,
+//     AAA_LARGE: true
+//   }
+// }
+```
+
+### `contrastRatio(color1: Contrastrast | string, color2: Contrastrast | string): number`
+
+Calculate the
+[WCAG 2.1 contrast ratio](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio)
+between any two colors.
+
+```typescript
+import { contrastRatio } from "contrastrast";
+
+const ratio1 = contrastRatio("#1a73e8", "#ffffff"); // 4.5
+const ratio2 = contrastRatio("rgb(255, 0, 0)", "hsl(0, 0%, 100%)"); // 3.998
+
+// Works with mixed formats
+const ratio3 = contrastRatio("#000", "rgb(255, 255, 255)"); // 21
+```
+
+Both functions accept color strings in any supported format (HEX, RGB, HSL) or
+Contrastrast instances.
+
+## Legacy API Support (v0.3.x)
+
+For backward compatibility, contrastrast still exports the legacy v0.3.x API,
+but these methods are deprecated and will be removed in v2.0.
+
+### `textContrastForBGColor(bgColorString: string, options?: Partial<ContrastrastOptions>): "dark" | "light"`
+
+**⚠️ Deprecated** - Use `new Contrastrast(bgColor).isLight() ? "dark" : "light"`
+or the new class methods instead.
+
+```typescript
+import { textContrastForBGColor } from "contrastrast";
+
+// Legacy usage (deprecated)
+const textColor = textContrastForBGColor("#1a73e8"); // "light"
+
+// Recommended v1.0+ approach
+const bgColor = new Contrastrast("#1a73e8");
+const textColor = bgColor.isLight() ? "dark" : "light"; // "light"
+```
+
+**Migration Guide:**
+
+- Replace `textContrastForBGColor(color)` with
+  `new Contrastrast(color).isLight() ? "dark" : "light"`
+- For more sophisticated analysis, use the new WCAG-compliant methods like
+  `meetsWCAG()` or `textContrast()`
+- The legacy `ContrastrastOptions` are replaced by `ParseOptions` for error
+  handling
+
 ## Contributing
 
-Happy for any and all contributions. Please note the project uses `pnpm` and I
-prefer to have git commits formatted with
-[`gitmoji-cli`](https://github.com/carloscuesta/gitmoji-cli)
+Happy for any and all contributions. This project uses Deno for development with
+the following commands:
+
+- `deno test` - Run tests
+- `deno lint` - Lint code
+- `deno fmt` - Format code
+- `deno task build:npm` - Test building the NPM distribution
+
+Please note I prefer git commits formatted with
+[`gitmoji-cli`](https://github.com/carloscuesta/gitmoji-cli).
