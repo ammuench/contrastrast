@@ -1,0 +1,122 @@
+name: Publish to NPM
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g., v1.0.0)"
+        required: true
+        type: string
+
+jobs:
+  validate:
+    name: Pre-publish Validation
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.tag }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Publishing version: ${VERSION}"
+
+      - name: Verify version in deno.json matches tag
+        run: |
+          DENO_VERSION=$(jq -r '.version' deno.json)
+          TAG_VERSION="${{ steps.version.outputs.version }}"
+          TAG_VERSION_CLEAN="${TAG_VERSION#v}"
+
+          if [ "$DENO_VERSION" != "$TAG_VERSION_CLEAN" ]; then
+            echo "Error: Version mismatch!"
+            echo "deno.json version: $DENO_VERSION"
+            echo "Tag version: $TAG_VERSION_CLEAN"
+            exit 1
+          fi
+
+      - name: Run quality checks
+        run: |
+          deno fmt --check
+          deno lint
+          deno test
+
+  build-and-publish:
+    name: Build and Publish to NPM
+    runs-on: ubuntu-latest
+    needs: validate
+    environment: publishing
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Build NPM package with dnt
+        run: deno run -A scripts/build_npm.ts
+
+      - name: Verify NPM package version matches tag
+        run: |
+          NPM_VERSION=$(jq -r '.version' npm/package.json)
+          TAG_VERSION="${{ needs.validate.outputs.version }}"
+          TAG_VERSION_CLEAN="${TAG_VERSION#v}"
+
+          if [ "$NPM_VERSION" != "$TAG_VERSION_CLEAN" ]; then
+            echo "Error: NPM package version mismatch!"
+            echo "npm/package.json version: $NPM_VERSION"
+            echo "Tag version: $TAG_VERSION_CLEAN"
+            exit 1
+          fi
+
+      - name: Verify package structure
+        run: |
+          test -f npm/package.json
+          test -d npm/esm
+          test -d npm/script
+          test -f npm/LICENSE
+          test -f npm/README.md
+
+      - name: Test NPM package imports
+        working-directory: npm
+        run: |
+          # Test CommonJS import
+          node -e "const contrastrast = require('./script/mod.js'); console.log('CommonJS import successful:', typeof contrastrast);"
+
+          # Test ESM import
+          node -e "import('./esm/mod.js').then(m => console.log('ESM import successful:', typeof m.default || typeof m));"
+
+      - name: Publish to NPM
+        working-directory: npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [[ "${{ needs.validate.outputs.version }}" == *"-"* ]]; then
+            echo "Publishing non-stable release with beta tag"
+            npm publish --tag beta
+          else
+            echo "Publishing stable release"
+            npm publish
+          fi

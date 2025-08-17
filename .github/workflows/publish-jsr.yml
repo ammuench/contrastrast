@@ -1,0 +1,84 @@
+name: Publish to JSR
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g., v1.0.0)"
+        required: true
+        type: string
+
+jobs:
+  validate:
+    name: Pre-publish Validation
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.tag }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Publishing version: ${VERSION}"
+
+      - name: Verify version in deno.json matches tag
+        run: |
+          DENO_VERSION=$(jq -r '.version' deno.json)
+          TAG_VERSION="${{ steps.version.outputs.version }}"
+          TAG_VERSION_CLEAN="${TAG_VERSION#v}"
+
+          if [ "$DENO_VERSION" != "$TAG_VERSION_CLEAN" ]; then
+            echo "Error: Version mismatch!"
+            echo "deno.json version: $DENO_VERSION"
+            echo "Tag version: $TAG_VERSION_CLEAN"
+            exit 1
+          fi
+
+      - name: Run quality checks
+        run: |
+          deno fmt --check
+          deno lint
+          deno test
+
+  publish:
+    name: Publish to JSR
+    runs-on: ubuntu-latest
+    needs: validate
+    environment: publishing
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Publish to JSR
+        env:
+          JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
+        run: deno publish
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.validate.outputs.version }}
+          name: Release ${{ needs.validate.outputs.version }}
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(needs.validate.outputs.version, '-') }}
