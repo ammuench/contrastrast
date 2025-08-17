@@ -69,14 +69,14 @@ describe("# textContrastForBGColor", () => {
       expect(TEST_RESULT1).toEqual(EXPECTED_FALLBACK1);
       expect(TEST_RESULT2).toEqual(EXPECTED_FALLBACK2);
     });
-    // test("it throws an error instead of a console log when `throwErrorOnUnhandled` is true", () => {
-    //   const INVALID_COLOR = "~~~";
-    //   expect(() => {
-    //     textContrastForBGColor(INVALID_COLOR, {
-    //       throwErrorOnUnhandled: true,
-    //     });
-    //   }).toThrowError();
-    // });
+    test("it throws an error instead of a console log when `throwErrorOnUnhandled` is true", () => {
+      const INVALID_COLOR = "~~~";
+      expect(() => {
+        textContrastForBGColor(INVALID_COLOR, {
+          throwErrorOnUnhandled: true,
+        });
+      }).toThrow();
+    });
   });
 
   afterAll(() => {

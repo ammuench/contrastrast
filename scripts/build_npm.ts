@@ -26,7 +26,7 @@ await build({
       "wcag",
       "text color",
       "text contrast",
-      "constrast",
+      "contrast",
       "readability",
       "legible",
       "a11y",

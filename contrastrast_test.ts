@@ -363,6 +363,52 @@ describe("# Contrastrast", () => {
       const roundTrip = color.toHex();
       expect(roundTrip).toBe(original);
     });
+
+    describe("### HSL edge cases", () => {
+      it("toHsl handles high lightness colors (saturation threshold)", () => {
+        // Very light color to trigger l > 0.5 branch in HSL conversion
+        const lightColor = new Contrastrast(
+          REFERENCE_COLORS.veryLightGray.hex.colorString,
+        );
+        const hsl = lightColor.toHsl();
+        expect(typeof hsl.h).toBe("number");
+        expect(typeof hsl.s).toBe("number");
+        expect(typeof hsl.l).toBe("number");
+      });
+
+      it("toHsl handles green-dominant colors", () => {
+        // Pure green to trigger case g: branch in HSL conversion
+        const greenColor = new Contrastrast(
+          REFERENCE_COLORS.pureGreen.hex.colorString,
+        );
+        const hsl = greenColor.toHsl();
+        expect(hsl.h).toBe(120);
+        expect(hsl.s).toBe(100);
+        expect(hsl.l).toBe(50);
+      });
+
+      it("toHsl handles blue-dominant colors", () => {
+        // Pure blue to trigger case b: branch in HSL conversion
+        const blueColor = new Contrastrast(
+          REFERENCE_COLORS.pureBlue.hex.colorString,
+        );
+        const hsl = blueColor.toHsl();
+        expect(hsl.h).toBe(240);
+        expect(hsl.s).toBe(100);
+        expect(hsl.l).toBe(50);
+      });
+
+      it("toHsl handles yellow color (green < blue condition)", () => {
+        // Yellow color to trigger g < b condition in red case
+        const yellowColor = new Contrastrast(
+          REFERENCE_COLORS.pureYellow.hex.colorString,
+        );
+        const hsl = yellowColor.toHsl();
+        expect(hsl.h).toBe(60);
+        expect(hsl.s).toBe(100);
+        expect(hsl.l).toBe(50);
+      });
+    });
   });
 
   describe("## Luminance and Brightness Calculations", () => {

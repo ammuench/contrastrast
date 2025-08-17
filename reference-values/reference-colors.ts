@@ -141,4 +141,108 @@ export const REFERENCE_COLORS: Record<string, ReferenceColor> = {
       colorString: "hsl(50, 80%, 40%)",
     },
   },
+  // Edge case colors for coverage testing
+  veryLightGray: {
+    hex: {
+      colorString: "#f0f0f0",
+    },
+    rgb: {
+      r: 240,
+      g: 240,
+      b: 240,
+      colorString: "rgb(240, 240, 240)",
+    },
+    hsl: {
+      h: "0",
+      s: "0%",
+      l: "94%",
+      colorString: "hsl(0, 0%, 94%)",
+    },
+  },
+  pureGreen: {
+    hex: {
+      colorString: "#00ff00",
+    },
+    rgb: {
+      r: 0,
+      g: 255,
+      b: 0,
+      colorString: "rgb(0, 255, 0)",
+    },
+    hsl: {
+      h: "120",
+      s: "100%",
+      l: "50%",
+      colorString: "hsl(120, 100%, 50%)",
+    },
+  },
+  pureBlue: {
+    hex: {
+      colorString: "#0000ff",
+    },
+    rgb: {
+      r: 0,
+      g: 0,
+      b: 255,
+      colorString: "rgb(0, 0, 255)",
+    },
+    hsl: {
+      h: "240",
+      s: "100%",
+      l: "50%",
+      colorString: "hsl(240, 100%, 50%)",
+    },
+  },
+  pureYellow: {
+    hex: {
+      colorString: "#ffff00",
+    },
+    rgb: {
+      r: 255,
+      g: 255,
+      b: 0,
+      colorString: "rgb(255, 255, 0)",
+    },
+    hsl: {
+      h: "60",
+      s: "100%",
+      l: "50%",
+      colorString: "hsl(60, 100%, 50%)",
+    },
+  },
+  // HSL edge case colors for RGB converter coverage testing
+  purplishBlue: {
+    hex: {
+      colorString: "#6600cc",
+    },
+    rgb: {
+      r: 102,
+      g: 0,
+      b: 204,
+      colorString: "rgb(102, 0, 204)",
+    },
+    hsl: {
+      h: "270",
+      s: "100%",
+      l: "40%",
+      colorString: "hsl(270, 100%, 40%)",
+    },
+  },
+  magenta: {
+    hex: {
+      colorString: "#cc3399",
+    },
+    rgb: {
+      r: 204,
+      g: 51,
+      b: 153,
+      colorString: "rgb(204, 51, 153)",
+    },
+    hsl: {
+      h: "320",
+      s: "75%",
+      l: "50%",
+      colorString: "hsl(320, 75%, 50%)",
+    },
+  },
 } as const;
