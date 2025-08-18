@@ -34,7 +34,8 @@
     "npm/",
     "__SPECS__/",
     "scripts/",
-    "node_modules/"
+    "node_modules/",
+    "dist"
   ],
   "test": {
     "exclude": [
@@ -42,7 +43,8 @@
       "__SPECS__/",
       "scripts/",
       "node_modules/",
-      "demo.ts"
+      "demo.ts",
+      "dist"
     ]
   },
   "imports": {
