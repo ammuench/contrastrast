@@ -28,3 +28,9 @@ coverage
 
 # Build artifacts
 npm/
+
+# Development and planning
+__SPECS__/
+demo.ts
+
+.env

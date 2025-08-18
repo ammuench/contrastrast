@@ -1,15 +1,19 @@
-import {
-  CONTRAST_THRESHOLD,
-  DEFAULT_CONTRASTRAST_OPTIONS,
-} from "../constants.ts";
+import { CONTRAST_THRESHOLD } from "../constants.ts";
 import { getRGBFromColorString } from "../helpers/colorStringParsers.ts";
-import { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
+import type { ContrastrastOptions } from "./contrastrastOptions.types.ts";
+
+const DEFAULT_CONTRASTRAST_OPTIONS: ContrastrastOptions = {
+  fallbackOption: "dark",
+  throwErrorOnUnhandled: false,
+};
 
 /**
  * Recommends to use either `light` or `dark` text based on the
  * given background color.
  *
  * Color string can be HEX, RGB, or HSL
+ *
+ * @deprecated This method will go away in v2, we recommend switching to `Contrastrast(color).textContrast(bgColor)` for a more comprehensive and accurate comparison
  *
  * @param   {String}                bgColorString                           Color string of the background.  Can be HEX, RGB, or HSL
  * @param   {ContrastrastOptions}   options                                 (Optional) Partial collection `ContrastrastOptions` that you wish you apply

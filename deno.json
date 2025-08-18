@@ -6,7 +6,7 @@
     "wcag",
     "text color",
     "text contrast",
-    "constrast",
+    "contrast",
     "readability",
     "legible",
     "a11y",
@@ -22,13 +22,28 @@
   "bugs": {
     "url": "https://github.com/ammuench/contrastrast/issues"
   },
-  "exports": "./main.ts",
+  "exports": "./mod.ts",
   "version": "0.3.1",
   "tasks": {
-    "dev": "deno run --watch main.ts",
+    "dev": "deno run --watch mod.ts",
     "lint-staged": "lint-staged",
     "prepare": "husky",
     "build:npm": "deno run -A scripts/build_npm.ts"
+  },
+  "exclude": [
+    "npm/",
+    "__SPECS__/",
+    "scripts/",
+    "node_modules/"
+  ],
+  "test": {
+    "exclude": [
+      "npm/",
+      "__SPECS__/",
+      "scripts/",
+      "node_modules/",
+      "demo.ts"
+    ]
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",

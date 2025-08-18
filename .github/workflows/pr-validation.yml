@@ -1,0 +1,44 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-validation:
+    name: Build Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Build NPM package
+        run: deno run -A scripts/build_npm.ts
+
+      - name: Verify NPM package structure
+        run: |
+          test -f npm/package.json
+          test -d npm/esm
+          test -d npm/script
+
+      - name: Test NPM package can be imported
+        working-directory: npm
+        run: |
+          npm install
+          node -e "const contrastrast = require('./script/mod.js'); console.log('NPM package import successful')"
+
+      - name: Validate TypeScript types with attw
+        run: npx @arethetypeswrong/cli --pack ./npm
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: npm/
+          retention-days: 7

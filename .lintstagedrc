@@ -1,5 +1,5 @@
 {
   "*.{js,ts,cjs}": ["deno lint --fix", "deno fmt"],
-  "*.{json,md}": "deno fmt",
+  "*.{json,md}": "deno fmt"
 }
 

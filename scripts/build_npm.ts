@@ -4,7 +4,7 @@ import { build, emptyDir } from "@deno/dnt";
 await emptyDir("./npm");
 
 await build({
-  entryPoints: ["./main.ts"],
+  entryPoints: ["./mod.ts"],
   outDir: "./npm",
   importMap: "deno.json",
   shims: {
@@ -26,7 +26,7 @@ await build({
       "wcag",
       "text color",
       "text contrast",
-      "constrast",
+      "contrast",
       "readability",
       "legible",
       "a11y",
@@ -40,7 +40,8 @@ await build({
     },
   },
   compilerOptions: {
-    lib: ["ESNext"],
+    lib: ["ESNext", "DOM"],
+    skipLibCheck: true,
   },
   postBuild() {
     // steps to run after building and before running the tests

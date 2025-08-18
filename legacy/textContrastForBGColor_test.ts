@@ -1,11 +1,11 @@
-import { Stub, stub } from "@std/testing/mock";
+import { type Stub, stub } from "@std/testing/mock";
 import { expect, fn } from "@std/expect";
 import { afterAll, beforeAll, describe, test } from "@std/testing/bdd";
 
 import { faker } from "npm:@faker-js/faker";
 
-import { ContrastrastOptions } from "../types/contrastrastOptionts.types.ts";
-import { textContrastForBGColor } from "../main.ts";
+import { textContrastForBGColor } from "./textContrastForBGColor.ts";
+import type { ContrastrastOptions } from "./contrastrastOptions.types.ts";
 
 describe("# textContrastForBGColor", () => {
   const consoleErrorSpy = fn();
@@ -69,14 +69,14 @@ describe("# textContrastForBGColor", () => {
       expect(TEST_RESULT1).toEqual(EXPECTED_FALLBACK1);
       expect(TEST_RESULT2).toEqual(EXPECTED_FALLBACK2);
     });
-    // test("it throws an error instead of a console log when `throwErrorOnUnhandled` is true", () => {
-    //   const INVALID_COLOR = "~~~";
-    //   expect(() => {
-    //     textContrastForBGColor(INVALID_COLOR, {
-    //       throwErrorOnUnhandled: true,
-    //     });
-    //   }).toThrowError();
-    // });
+    test("it throws an error instead of a console log when `throwErrorOnUnhandled` is true", () => {
+      const INVALID_COLOR = "~~~";
+      expect(() => {
+        textContrastForBGColor(INVALID_COLOR, {
+          throwErrorOnUnhandled: true,
+        });
+      }).toThrow();
+    });
   });
 
   afterAll(() => {
