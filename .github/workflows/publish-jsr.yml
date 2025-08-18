@@ -61,7 +61,7 @@ jobs:
     needs: validate
     environment: publishing
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - name: Checkout code
@@ -73,9 +73,9 @@ jobs:
           deno-version: v2.x
 
       - name: Publish to JSR
-        env:
-          JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
         run: deno publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
