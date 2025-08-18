@@ -5,10 +5,10 @@ code in this repository.
 
 ## Project Overview
 
-**contrastrast** is a lightweight TypeScript/Deno library that parses color
-strings (HEX, RGB, HSL) and recommends text contrast ("dark" or "light") based
-on WCAG standards. The library uses the WCAG brightness calculation formula to
-determine optimal text color for accessibility.
+**contrastrast** is a comprehensive TypeScript/Deno library for color
+manipulation, parsing, conversion, and accessibility analysis. Built with WCAG
+2.1 standards, it provides full contrast ratio calculations, accessibility
+compliance checking, and multi-format color support (HEX, RGB, HSL).
 
 ## Development Commands
 
@@ -17,6 +17,7 @@ determine optimal text color for accessibility.
 - `deno run --watch mod.ts` - Run in development mode with file watching
 - `deno test` - Run all tests (uses Deno's built-in test runner with
   @std/testing and @std/expect)
+- `deno test <pattern>` - Run specific test files matching pattern
 - `deno lint` - Lint TypeScript files
 - `deno fmt` - Format TypeScript and other files
 
@@ -36,71 +37,90 @@ determine optimal text color for accessibility.
 ### Core Module Structure
 
 ```
-mod.ts                           # Main export entry point
-constants.ts                     # Shared constants (CONTRAST_THRESHOLD, defaults)
-types/                           # TypeScript type definitions
-  ├── RGB.types.ts              # RGBValues type
-  └── contrastrastOptionts.types.ts # ContrastrastOptions type
-modules/
-  └── textContrastForBGColor.ts  # Main contrast calculation logic
-helpers/
-  ├── colorStringParsers.ts      # Color string parsing (HEX, RGB, HSL)
-  └── rgbConverters.ts          # Color format conversion utilities
+mod.ts                    # Main export entry point (v1.0.x + legacy v0.3.x API)
+contrastrast.ts          # Main Contrastrast class implementation
+constants.ts             # Shared constants (CONTRAST_THRESHOLD, WCAG thresholds)
+types/                   # TypeScript type definitions
+  ├── Colors.types.ts    # RGBValues, HSLValues types
+  ├── ParseOptions.types.ts # ParseOptions configuration
+  └── WCAG.types.ts      # WCAG compliance types
+utils/                   # Standalone utility functions
+  ├── textContrast.ts    # Contrast calculation with WCAG analysis
+  └── contrastRatio.ts   # Basic contrast ratio calculation
+helpers/                 # Color parsing and conversion utilities
+  ├── colorStringParsers.ts # Multi-format color string parsing
+  └── rgbConverters.ts   # Format conversion utilities
+legacy/                  # v0.3.x backward compatibility
+  └── textContrastForBGColor.ts # Deprecated simple contrast function
 ```
 
 ### Key Components
 
-**textContrastForBGColor** (`modules/textContrastForBGColor.ts:20`)
+**Contrastrast Class** (`contrastrast.ts`)
 
-- Main function that takes a color string and returns "dark" or "light"
-- Uses WCAG brightness formula: `(r * 299 + g * 587 + b * 114) / 1000`
-- Compares against `CONTRAST_THRESHOLD` (124) from `constants.ts:3`
+- Main API entry point with comprehensive color manipulation
+- Factory methods: `fromHex()`, `fromRgb()`, `fromHsl()`, `parse()`
+- WCAG 2.1 compliant luminance and contrast calculations
+- Format conversion: `toHex()`, `toRgb()`, `toHsl()`, plus string variants
+- Accessibility methods: `contrastRatio()`, `meetsWCAG()`, `isLight()`,
+  `isDark()`
 
-**Color Parsing Pipeline** (`helpers/colorStringParsers.ts:17`)
+**WCAG Utilities** (`utils/`)
 
-- Supports HEX (#abc, #abcdef), RGB (rgb(r,g,b)), and HSL (hsl(h,s%,l%)) formats
-- Uses regex patterns to identify and extract color values
-- Delegates to specific converter functions in `rgbConverters.ts`
+- `textContrast()` - Detailed WCAG analysis with compliance breakdown
+- `contrastRatio()` - Basic contrast ratio calculation between any two colors
+- Support for both simple ratios and detailed compliance reports
 
-**RGB Conversion Utilities** (`helpers/rgbConverters.ts`)
+**Color Parsing Pipeline** (`helpers/colorStringParsers.ts`)
 
-- `extractRGBValuesFromHex` - Handles 3 and 6 character hex codes
-- `extractRGBValuesFromHSL` - Converts HSL to RGB using standard formula
-- `extractRGBValuesFromRGBStrings` - Parses RGB string values to numbers
+- Unified parser supporting HEX (#abc, #abcdef), RGB (rgb(r,g,b)), HSL
+  (hsl(h,s%,l%))
+- Error handling with configurable fallback behavior
+- Regex-based format detection and value extraction
+
+**RGB Conversion System** (`helpers/rgbConverters.ts`)
+
+- `extractRGBValuesFromHex()` - 3/6 digit hex code conversion
+- `extractRGBValuesFromHSL()` - HSL to RGB using standard color space conversion
+- `extractRGBValuesFromRGBStrings()` - RGB string parsing and validation
 
 ### Dual Distribution Strategy
 
-The project uses Deno for development but builds to NPM for broader
-compatibility:
-
-- **Deno**: Primary development environment with native TypeScript support
-- **NPM Build**: Uses `@deno/dnt` to transpile to Node.js-compatible package in
-  `./npm/`
-- Both JSR (@amuench/contrastrast) and NPM (contrastrast) distributions are
-  supported
+- **Deno/JSR**: Primary development environment (@amuench/contrastrast)
+- **NPM**: Node.js distribution via @deno/dnt transpilation (contrastrast)
+- Build script (`scripts/build_npm.ts`) handles package.json generation and
+  asset copying
+- Version synchronization between deno.json and generated package.json
 
 ### Testing Approach
 
 - Co-located test files using `.test.ts` suffix
-- Uses Deno's built-in test runner with `@std/testing` and `@std/expect`
-- Tests cover color parsing, RGB conversion, and contrast calculation logic
-- Faker.js used for generating test data
+- Comprehensive test coverage for color parsing, conversion, and WCAG
+  calculations
+- Uses @std/testing framework with @std/expect assertions
+- Faker.js integration for property-based testing with random color generation
+- Reference values in `reference-values/` for WCAG compliance validation
 
-## Error Handling Strategy
+### API Evolution
 
-The library follows a graceful degradation pattern:
+The library maintains backward compatibility while providing a modern v1.0+ API:
 
-- Invalid color strings trigger fallback to default option ("dark" by default)
-- `throwErrorOnUnhandled` option can force errors instead of fallbacks
-- All parsing errors are caught and logged with context
+- **v1.0.x**: Full-featured Contrastrast class with WCAG 2.1 compliance
+- **v0.3.x Legacy**: Simple `textContrastForBGColor()` function (deprecated)
+- Dual export strategy allows gradual migration from legacy API
 
-## Development Workflow
+### Error Handling Strategy
 
-### Feature Planning
+- **ParseOptions**: Configurable error handling with `throwOnError` and
+  `fallbackColor`
+- **Graceful Degradation**: Invalid colors can fallback to defaults instead of
+  throwing
+- **Type Safety**: Full TypeScript support with comprehensive type definitions
+  for all APIs
 
-- Use the `__SPECS__/` directory for feature planning and specification
-  documents
-- Create markdown files in `__SPECS__/` to document new features before
-  implementation
-- This directory is gitignored to keep planning documents local to your
-  development environment
+### Publishing Workflow
+
+- **JSR Publishing**: OIDC-authenticated via GitHub Actions to jsr.io
+- **NPM Publishing**: Automated build and publish to npmjs.org
+- **Version Management**: Single source of truth in deno.json with validation
+- **Release Creation**: Automatic GitHub releases with generated notes
